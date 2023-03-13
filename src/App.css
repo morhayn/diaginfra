@@ -1,0 +1,118 @@
+.App {
+  text-align: center;
+}
+
+.App-logo {
+  height: 40vmin;
+  pointer-events: none;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .App-logo {
+    animation: App-logo-spin infinite 20s linear;
+  }
+}
+
+.App-header {
+  background-color: #282c34;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  font-size: calc(10px + 2vmin);
+  color: white;
+}
+
+.App-link {
+  color: #61dafb;
+}
+
+@keyframes App-logo-spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+.parent {
+  display: grid;
+  grid-template-columns: repeat(6, 1fr);
+  grid-template-rows: repeat(3, 1fr);
+  grid-column-gap: 0px;
+  grid-row-gap: 0px;
+}
+.div1 { grid-area: 1 / 1 / 3 / 3; }
+.div2 { grid-area: 1 / 3 / 3 / 5; }
+.div3 { grid-area: 1 / 5 / 3 / 7; }
+.div4 { grid-area: 3 / 1 / 4 / 7; }
+
+td {
+  border-right: 2px rgb(113, 113, 113) solid;
+  border-bottom: 2px rgb(113, 113, 113) solid;
+}
+/* tr:hover { */
+  /* filter: brightness(85%); */
+/* } */
+.sele td{
+  /* filter: brightness(85%); */
+  color: rgb(0, 9, 46);
+  /* font-style: italic; */
+  border-bottom: 2px red solid;
+}
+.tbllogg {
+  overflow: 'hidden';
+  table-layout: fixed;
+  width: 100%;
+  text-overflow: ellipsis;
+}
+.tbllogg tr:nth-child(2n) {
+	background-color:rgb(240, 240, 240);
+}
+.tooltip {
+  position: relative;
+  display: inline-block;
+}
+
+.tooltip .tooltip-box {
+  position: absolute;
+  width: 200px;
+  color:#000000;
+  background-color:#ffffff;
+  z-index:1;
+  padding: 5px;
+  border-radius: 5px;
+  top: calc(100% + 5px);
+  filter: brightness(100%);
+  /* display: none; */
+  /* opacity: 0; */
+  visibility: hidden;
+  /* transition: opacity 0.3s; */
+}
+
+.tooltip:hover .tooltip-box{
+  /* display: block; */
+  /* opacity: 1; */
+  z-index:1;
+  visibility: visible;
+}
+.modal {
+/*  visibility: hidden; /* Hidden by default */
+  position: fixed; /* Stay in place */
+  z-index: 1; /* Sit on top */
+  left: 0;
+  top: 0;
+  width: 100%; /* Full width */
+  height: 100%; /* Full height */
+  overflow: auto; /* Enable scroll if needed */
+  background-color: rgb(0,0,0); /* Fallback color */
+  background-color: rgba(0,0,0,0.4); /* Black w/ opacity */
+}
+.modal-content {
+  background-color: #fefefe;
+  margin: 15% auto; /* 15% from the top and centered */
+  padding: 20px;
+  border: 1px solid #888;
+  width: 80%; /* Could be more or less, depending on screen size */
+}
