@@ -7,6 +7,7 @@ import (
 	"log"
 	"net"
 	"os"
+	"regexp"
 	"sort"
 	"strings"
 	"sync"
@@ -34,6 +35,7 @@ var (
 		"LoadAvg":       "awk '{print $1}' /proc/loadavg",
 		"Systemd":       "sudo systemctl is-active %s",
 	}
+	reg = `%!.?\([EXTRA|MISSING]`
 )
 
 type Execer interface {
@@ -179,6 +181,10 @@ func (s *CmdExec) swCmd(srv, prg chan Out) {
 	s.Chan = prg
 	s.Cmd = ""
 	splName := strings.Split(s.Name, ":")
+	//Space in arg must inject command in test command
+	if testSpaceInArg(splName) {
+		return
+	}
 	switch len(splName) {
 	case 1:
 		if cmd, ok := mapCmd[s.Name]; ok {
@@ -203,6 +209,12 @@ func (s *CmdExec) swCmd(srv, prg chan Out) {
 		if cmd, ok := mapCmd[s.Name]; ok {
 			s.Cmd = fmt.Sprintf(cmd, splName[1], splName[2], splName[3])
 		}
+	}
+	//If Sprintf print error in string MISSING or EXTRA arg
+	r := regexp.MustCompile(reg)
+	mutchErr := r.FindStringIndex(s.Cmd)
+	if mutchErr != nil {
+		s.Cmd = ""
 	}
 }
 
@@ -248,4 +260,14 @@ func (conf SshConfig) Execute(ip string, cmd CmdExec) {
 		return
 	}
 	cmd.Chan <- NewOut(cmd.Name, cmd.PrgName, stdoutBuf.String())
+}
+func testSpaceInArg(str []string) bool {
+	r := regexp.MustCompile(`\s+`)
+	for _, s := range str {
+		m := r.FindStringIndex(s)
+		if m != nil {
+			return true
+		}
+	}
+	return false
 }

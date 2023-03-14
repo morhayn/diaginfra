@@ -41,6 +41,27 @@ func TestSwSmd(t *testing.T) {
 		assert.Equal(t, ssh.Cmd, "curl -X GET http://127.0.0.1:9200/_cluster/health")
 		assert.Equal(t, ssh.Chan, prg)
 	})
+	t.Run("test space in arg swCmd", func(t *testing.T) {
+		ssh := CmdExec{
+			Name: "Systemd:Test Space",
+		}
+		ssh.swCmd(srv, prg)
+		assert.Equal(t, ssh.Cmd, "")
+	})
+	t.Run("test error many arg to swCmd", func(t *testing.T) {
+		ssh := CmdExec{
+			Name: "Systemd:Test:ARG",
+		}
+		ssh.swCmd(srv, prg)
+		assert.Equal(t, ssh.Cmd, "")
+	})
+	t.Run("test error few arg swCmd", func(t *testing.T) {
+		ssh := CmdExec{
+			Name: "Tomcat:admin:pass",
+		}
+		ssh.swCmd(srv, prg)
+		assert.Equal(t, ssh.Cmd, "")
+	})
 }
 func TestBuildCmd(t *testing.T) {
 	t.Run("test Build one prg commands", func(t *testing.T) {
