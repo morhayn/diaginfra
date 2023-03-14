@@ -22,10 +22,10 @@ import (
 )
 
 var (
-	RunOps   string
-	wg       sync.WaitGroup
-	Username string
-	Status   Hosts
+	RunOps string
+	wg     sync.WaitGroup
+	// Username string
+	Status Hosts
 )
 
 type Terminal struct {
@@ -133,26 +133,17 @@ func serverHandler(loadData YumInit, port chport.Cheker, url churl.Churler, conf
 }
 
 // Open terminal for administrating servers
-func OpenTerminal(c *gin.Context) {
+func OpenTerminal(t Terminal, username string) {
 	if RunOps != "server" {
-		var terminal Terminal
-		err := c.BindJSON(&terminal)
-		if err != nil {
-			fmt.Println(err)
-		}
 		desktop := os.Getenv("DESKTOP_SESSION")
 		if desktop == "gnome" {
-			cmd := exec.Command("gnome-terminal", "--", "ssh", Username+"@"+terminal.Ip, "-tt", "sudo -i")
-			err = cmd.Run()
+			cmd := exec.Command("gnome-terminal", "--", "ssh", username+"@"+t.Ip, "-tt", "sudo -i")
+			cmd.Run()
 		} else if desktop == "fly" {
-			cmd := exec.Command("fly-term", "-e", "ssh", Username+"@"+terminal.Ip, "-tt", "'sudo -i'")
-			err = cmd.Run()
+			cmd := exec.Command("fly-term", "-e", "ssh", username+"@"+t.Ip, "-tt", "'sudo -i'")
+			cmd.Run()
 		}
-		fmt.Println(err)
-		// fmt.Println(terminal)
 	}
-	c.Header("Context-Type", "application/json")
-	c.JSON(http.StatusOK, "")
 }
 
 // Main package run this function
@@ -174,7 +165,17 @@ func RunGin(port chport.Cheker, url churl.Churler, conf sshcmd.Execer, loadData 
 		c.Header("Context-Type", "application/json")
 		c.JSON(http.StatusOK, result)
 	})
-	api.POST("/terminal", OpenTerminal)
+	api.POST("/terminal", func(c *gin.Context) {
+		var terminal Terminal
+		err := c.BindJSON(&terminal)
+		if err != nil {
+			c.JSON((http.StatusBadRequest), "")
+			return
+		}
+		OpenTerminal(terminal, loadData.UserName)
+		c.Header("Context-Type", "application/json")
+		c.JSON(http.StatusOK, "")
+	})
 	api.POST("/errorlogs", func(c *gin.Context) {
 		var wg_l sync.WaitGroup
 		var ch = make(chan getlog.GetLog)

@@ -19,24 +19,30 @@ type GetLog struct {
 
 // Get count ERROR in logs java programs
 func (g GetLog) GetErrors(logs map[string]string, conf sshcmd.Execer) GetLog {
-	// logs := g.GetLogs(stend, conf)
 	path, ok := logs[g.Service]
 	if !ok {
 		return g
 	}
 	cmd := ""
 	if g.Service == "docker" {
-		cmd = fmt.Sprintf(`sudo docker logs --tail %d %s | awk '/ERROR/ { err++ } END { print err }'`, 300, g.Module)
+		cmd = fmt.Sprintf(`sudo docker logs --tail %d %s | awk '/ERROR/ { err++ } END { print err }'`, 1000, g.Module)
 	} else {
-		cmd = fmt.Sprintf(`sudo tail -n %d %s | awk '/ERROR/ { err++ } END { print err }'`, 300, path)
+		cmd = fmt.Sprintf(`sudo tail -n %d %s%s.log | awk '/ERROR/ { err++ } END { print err }'`, 1000, path, g.Module)
 	}
-	g.Errors, _ = strconv.Atoi(g.runCmd(cmd, conf))
+	out := strings.TrimSpace(g.runCmd(cmd, conf))
+	if out != "" {
+		if e, err := strconv.Atoi(out); err == nil {
+			g.Errors = e
+		} else {
+			fmt.Println(err)
+		}
+	}
 	return g
 }
 
 // Get tail logs service to displey it user
 func (g GetLog) GetLogs(logs map[string]string, conf sshcmd.Execer) string {
-	cmd, err := g.cmdReadLog(logs, 300)
+	cmd, err := g.cmdReadLog(logs, 1000)
 	if err != nil {
 		return "no logs"
 	}
@@ -82,7 +88,7 @@ func (g GetLog) cmdReadLog(logs map[string]string, tail int) (string, error) {
 	}
 	switch g.Service {
 	case "Jar":
-		cmd = fmt.Sprintf("sudo tail -n %d %s%s.log", tail, logs["jar"], g.Module)
+		cmd = fmt.Sprintf("sudo tail -n %d %s%s.log", tail, logs["Jar"], g.Module)
 	case "tomcat":
 		cmd = fmt.Sprintf("sudo tail -n %d %s%s.log", tail, logs["tomcat"], g.Module)
 	case "Tomcat":

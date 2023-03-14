@@ -18,6 +18,7 @@ import (
 var (
 	mapCmd = map[string]string{
 		"Tomcat":        "curl -u %s:%s http://127.0.0.1:%s/manager/text/list",
+		"Jar":           "sudo systemctl is-active %s",
 		"WarTomcatInfo": "sudo find %s -name build-info.properties -exec cat {} \\; | awk -F'[=]' '/time|version|artifact/ {print $2}'",
 		"Elastic":       "curl -X GET http://127.0.0.1:9200/_cluster/health",
 		"Kafka":         "export KAFAK_OPTS='-Djava.security.auth.login.config=/etc/kafka/kafka_jaas.conf'; /d01/kafka/bin/kafka-topics.sh --list --zookeeper localhost:2181",
@@ -25,7 +26,7 @@ var (
 		"Rabbit":        "rabbitmqctl status",
 		"Ceph":          "sudo ceph status | awk '/health/ {print $2}'",
 		"Docker":        `sudo docker ps --format '{"name":"{{.Names}}", "status":"{{.Status}}"}'`,
-		"Postgress":     "pg_lsclusters | awk 'FNR > 1 {print $4}'",
+		"Postgresql":    "pg_lsclusters | awk 'FNR > 1 {print $4}'",
 		"Mongo":         `mongo -u %s -p "%s"  --eval 'db.stats()'`, // rs.status()
 		"Cassandra":     "nodetool status",
 		"Prg":           "sudo systemctl is-active %s",
@@ -129,16 +130,16 @@ func Run(ip string, list []string, conf Execer) ([]Out, []Out, error) {
 }
 
 // Check Jar service  how programm
-func (c *Comands) jarsCmd(stend string, jars []string, srv chan Out) {
-	for _, jar := range jars {
-		j := CmdExec{
-			Name: jar,
-			Chan: srv,
-			Cmd:  fmt.Sprintf(mapCmd["Jar"], jar),
-		}
-		c.Comm = append(c.Comm, j)
-	}
-}
+// func (c *Comands) jarsCmd(stend string, jars []string, srv chan Out) {
+// for _, jar := range jars {
+// j := CmdExec{
+// Name: jar,
+// Chan: srv,
+// Cmd:  fmt.Sprintf(mapCmd["Jar"], jar),
+// }
+// c.Comm = append(c.Comm, j)
+// }
+// }
 
 // Build structure for check service and programm
 // chan srv for service (systemd check)

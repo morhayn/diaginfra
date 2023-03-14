@@ -21,12 +21,11 @@
  ```
  npm init
  npm run build
- go mod init mymain
  go mod tidy
  CGO_ENABLED=0 go build -o diaginfra main.go
 ```
 
-- Directories needed to work - conf and build.
+- Directories needed to work - conf, build
 
 - Run ./diaginfra 
 - Open in browser http://localhost:3000
