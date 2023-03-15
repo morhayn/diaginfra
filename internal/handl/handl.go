@@ -233,7 +233,6 @@ func handleTomcatInfo(in string) (map[string]string, error) {
 	return res, nil
 }
 func handleTomcatStatus(in string) (map[string]string, error) {
-	fmt.Println(in)
 	res := make(map[string]string)
 	if strings.HasPrefix(strings.ToLower(in), "ok") {
 		lines := strings.Split(in, "\n")
