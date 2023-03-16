@@ -17,6 +17,7 @@ var (
 
 type Module interface {
 	RunString(arg ...string) (string, error)
+	Logs(count int, arg ...string) (string, error)
 	Handler(in string) ([]Result, error)
 }
 type Results struct {

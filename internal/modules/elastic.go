@@ -11,6 +11,14 @@ func (t Elastic) RunString(arg ...string) (string, error) {
 	cmd := "curl -X GET http://127.0.0.1:9200/_cluster/health"
 	return fmt.Sprint(cmd), nil
 }
+func (t Elastic) Logs(count int, arg ...string) (string, error) {
+	log := ""
+	if len(arg) > 0 {
+		log = fmt.Sprintf("sudo tail -n %d %s", count, arg[0])
+		return log, nil
+	}
+	return "", fmt.Errorf("not path to log Elasticsearch %s", arg)
+}
 
 func (t Elastic) Handler(in string) ([]Result, error) {
 	var res = []Result{}

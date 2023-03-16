@@ -13,7 +13,14 @@ func (t Docker) RunString(arg ...string) (string, error) {
 	cmd := `sudo docker ps --format '{"name":"{{.Names}}", "status":"{{.Status}}"}'`
 	return fmt.Sprint(cmd), nil
 }
-
+func (t Docker) Logs(count int, arg ...string) (string, error) {
+	log := ""
+	if len(arg) > 0 {
+		log = fmt.Sprintf("sudo docker logs --tail %d %s", count, arg[0])
+		return log, nil
+	}
+	return "", fmt.Errorf("not path to log Docker %s", arg)
+}
 func (t Docker) Handler(in string) ([]Result, error) {
 	var docker = Dock{}
 	var res = []Result{}

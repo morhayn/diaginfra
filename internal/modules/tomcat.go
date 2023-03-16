@@ -12,6 +12,16 @@ func (t Tomcat) RunString(arg ...string) (string, error) {
 	cmd := "curl -u %s:%s http://127.0.0.1:%s/manager/text/list"
 	return fmt.Sprintf(cmd, iface(arg)...), nil
 }
+func (t Tomcat) Logs(count int, arg ...string) (string, error) {
+	log := ""
+	if len(arg) > 1 {
+		if arg[1] == "Tomcat" {
+			arg[1] = "catalina.out"
+		}
+		log = fmt.Sprintf("tail -n %d %s%s", count, arg[0], arg[1])
+	}
+	return log, nil
+}
 func (t Tomcat) Handler(in string) ([]Result, error) {
 	res := []Result{}
 	if strings.HasPrefix(strings.ToLower(in), "ok") {

@@ -4,6 +4,7 @@ Create config file - config.yaml
 ```
 user: "username"
 ssh_port: "22"
+countlog: 300
 list_urls:
   - "list url for testing"
 logs:
@@ -28,6 +29,7 @@ hosts:
       - "list war files"
 ```
 user - user name for conect ssh to servers. Ssh key get from ~/.ssh/
+countlog - count tail log file
 logs - path to logs file
 list_usrls - list urls http and https for test response status code
 list_ports - list ports for checks
