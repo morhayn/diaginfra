@@ -36,6 +36,7 @@ type YumInit struct {
 	// Stend     string            `yaml:"stend"`
 	UserName string            `yaml:"user"`
 	SshPort  string            `yaml:"ssh_port"`
+	CountLog int               `yaml:"countlog"`
 	ListUrls []string          `yaml:"list_urls"`
 	Logs     map[string]string `yaml:"logs"`
 	Hosts    []Init            `yaml:"hosts"`
@@ -192,7 +193,7 @@ func RunGin(port chport.Cheker, url churl.Churler, conf sshcmd.Execer, loadData 
 							Service: st.Service,
 							Module:  st.Status,
 						}
-						out := get.GetErrors(loadData.Logs, conf)
+						out := get.GetErrors(loadData.Logs, loadData.CountLog, conf)
 						ch <- out
 					}(host.Ip, st)
 				}
@@ -212,7 +213,7 @@ func RunGin(port chport.Cheker, url churl.Churler, conf sshcmd.Execer, loadData 
 		if err := c.BindJSON(&getlog); err != nil {
 			fmt.Println(err)
 		}
-		logs := getlog.GetLogs(loadData.Logs, conf)
+		logs := getlog.GetLogs(loadData.Logs, loadData.CountLog, conf)
 		c.Header("Context-Type", "application/json")
 		c.JSON(http.StatusOK, logs)
 	})
