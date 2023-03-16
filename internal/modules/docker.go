@@ -3,6 +3,7 @@ package modules
 import (
 	"encoding/json"
 	"fmt"
+	"sort"
 	"strings"
 )
 
@@ -36,5 +37,8 @@ func (t Docker) Handler(in string) ([]Result, error) {
 			})
 		}
 	}
+	sort.Slice(res, func(p, q int) bool {
+		return res[p].Result > res[q].Result
+	})
 	return res, nil
 }

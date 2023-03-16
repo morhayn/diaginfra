@@ -140,7 +140,8 @@ func OpenTerminal(t Terminal, username string) {
 			cmd := exec.Command("gnome-terminal", "--", "ssh", username+"@"+t.Ip, "-tt", "sudo -i")
 			cmd.Run()
 		} else if desktop == "fly" {
-			cmd := exec.Command("fly-term", "-e", "ssh", username+"@"+t.Ip, "-tt", "'sudo -i'")
+			// sudo not work... Need testing
+			cmd := exec.Command("fly-term", "-e", "ssh", username+"@"+t.Ip)
 			cmd.Run()
 		}
 	}

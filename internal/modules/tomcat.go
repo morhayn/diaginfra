@@ -2,6 +2,7 @@ package modules
 
 import (
 	"fmt"
+	"sort"
 	"strings"
 )
 
@@ -32,6 +33,9 @@ func (t Tomcat) Handler(in string) ([]Result, error) {
 		if len(res) == 0 {
 			return nil, fmt.Errorf("Error response count line 0")
 		}
+		sort.Slice(res, func(p, q int) bool {
+			return res[p].Result > res[q].Result
+		})
 		return res, nil
 	} else {
 		return nil, fmt.Errorf("Error Tomcat service failed response")

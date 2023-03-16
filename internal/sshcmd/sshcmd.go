@@ -178,6 +178,7 @@ func (c *Comands) buildCmd(list []string) (_, _ chan Out) {
 
 // Swith command for test service
 func (s *CmdExec) swCmd(srv, prg chan Out) {
+	// var err error
 	s.Chan = prg
 	s.Cmd = ""
 	splName := strings.Split(s.Name, ":")
@@ -185,6 +186,11 @@ func (s *CmdExec) swCmd(srv, prg chan Out) {
 	if testSpaceInArg(splName) {
 		return
 	}
+	// test := modules.MapCmd[splName[0]]
+	// s.Cmd, err = test.RunString(splName...)
+	// if err != nil {
+	// s.Cmd = ""
+	// }
 	switch len(splName) {
 	case 1:
 		if cmd, ok := mapCmd[s.Name]; ok {

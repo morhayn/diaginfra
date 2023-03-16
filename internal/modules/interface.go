@@ -1,7 +1,7 @@
 package modules
 
 var (
-	mapCmd = map[string]Module{
+	MapCmd = map[string]Module{
 		"Tomcat":     Tomcat{},
 		"Elastic":    Elastic{},
 		"Kafka":      Kafka{},
