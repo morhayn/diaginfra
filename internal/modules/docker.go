@@ -8,12 +8,12 @@ import (
 
 type Docker struct{}
 
-func (t *Docker) RunString(arg ...string) (string, error) {
+func (t Docker) RunString(arg ...string) (string, error) {
 	cmd := `sudo docker ps --format '{"name":"{{.Names}}", "status":"{{.Status}}"}'`
 	return fmt.Sprintf(cmd, arg), nil
 }
 
-func (t *Docker) Handler(in string) ([]Result, error) {
+func (t Docker) Handler(in string) ([]Result, error) {
 	var docker = Dock{}
 	var res = []Result{}
 	spl_res := strings.Split(in, "\n")

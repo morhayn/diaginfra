@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
+	"sort"
 	"strings"
 
 	"github.com/morhayn/diaginfra/internal/sshcmd"
@@ -260,5 +261,8 @@ func addDataWars(stat, info map[string]string) ([]Result, error) {
 		}
 		res = append(res, *newResult("tomcat", k, v, info[k], alarm))
 	}
+	sort.Slice(res, func(p, q int) bool {
+		return res[p].Result > res[q].Result
+	})
 	return res, nil
 }

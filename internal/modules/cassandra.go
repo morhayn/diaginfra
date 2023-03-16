@@ -7,12 +7,12 @@ import (
 
 type Cassandra struct{}
 
-func (t *Cassandra) RunString(arg ...string) (string, error) {
+func (t Cassandra) RunString(arg ...string) (string, error) {
 	cmd := "rabbitmqctl status"
 	return fmt.Sprintf(cmd, arg), nil
 }
 
-func (t *Cassandra) Handler(in string) ([]Result, error) {
+func (t Cassandra) Handler(in string) ([]Result, error) {
 	var res = []Result{}
 	spl_res := strings.Split(in, "\n")
 	if len(spl_res) > 4 {

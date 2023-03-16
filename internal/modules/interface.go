@@ -1,8 +1,23 @@
 package modules
 
+var (
+	mapCmd = map[string]Module{
+		"Tomcat":     Tomcat{},
+		"Elastic":    Elastic{},
+		"Kafka":      Kafka{},
+		"Hazelcast":  Hazelcast{},
+		"Rabbit":     Rabbitmq{},
+		"Ceph":       Ceph{},
+		"Docker":     Docker{},
+		"Postgresql": Postgresql{},
+		"Mongo":      Mongodb{},
+		"Cassandra":  Cassandra{},
+	}
+)
+
 type Module interface {
-	RunString(string) (string, error)
-	Handler(string) error
+	RunString(arg ...string) (string, error)
+	Handler(in string) ([]Result, error)
 }
 type Results struct {
 	Res []Result

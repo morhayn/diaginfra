@@ -7,14 +7,15 @@ import (
 
 type Tomcat struct{}
 
-func (t *Tomcat) RunString(arg ...string) (string, error) {
+func (t Tomcat) RunString(arg ...string) (string, error) {
 	cmd := "curl -u %s:%s http://127.0.0.1:%s/manager/text/list"
 	return fmt.Sprintf(cmd, arg), nil
 }
-func (t *Tomcat) Handler(in string) ([]Result, error) {
+func (t Tomcat) Handler(in string) ([]Result, error) {
 	res := []Result{}
 	if strings.HasPrefix(strings.ToLower(in), "ok") {
 		lines := strings.Split(in, "\n")
+		//First string in array "OK - Listed applications for virtual host localhost" its only status tomcat
 		for _, line := range lines[1:] {
 			arr_out := strings.Split(line, ":")
 			if len(arr_out) > 1 {

@@ -7,12 +7,12 @@ import (
 
 type Ceph struct{}
 
-func (t *Ceph) RunString(arg ...string) (string, error) {
+func (t Ceph) RunString(arg ...string) (string, error) {
 	cmd := "sudo ceph status | awk '/health/ {print $2}'"
 	return fmt.Sprintf(cmd, arg), nil
 }
 
-func (t *Ceph) Handler(in string) ([]Result, error) {
+func (t Ceph) Handler(in string) ([]Result, error) {
 	var res = []Result{}
 	if strings.HasPrefix(in, "HEALTH_OK") {
 		res = append(res, Result{
