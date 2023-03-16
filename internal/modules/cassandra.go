@@ -8,8 +8,8 @@ import (
 type Cassandra struct{}
 
 func (t Cassandra) RunString(arg ...string) (string, error) {
-	cmd := "rabbitmqctl status"
-	return fmt.Sprintf(cmd, arg), nil
+	cmd := "nodetool status"
+	return fmt.Sprint(cmd), nil
 }
 
 func (t Cassandra) Handler(in string) ([]Result, error) {

@@ -6,9 +6,17 @@ type Rabbitmq struct{}
 
 func (t Rabbitmq) RunString(arg ...string) (string, error) {
 	cmd := "rabbitmqctl status"
-	return fmt.Sprintf(cmd, arg), nil
+	return fmt.Sprint(cmd), nil
 }
 
 func (t Rabbitmq) Handler(in string) ([]Result, error) {
-	return []Result{}, nil
+	res := []Result{}
+	res = append(res, Result{
+		Service: "Kafka",
+		Status:  in,
+		Result:  "running",
+		Alarm:   false,
+		Tooltip: "",
+	})
+	return res, nil
 }

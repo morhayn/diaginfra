@@ -9,7 +9,7 @@ type Ceph struct{}
 
 func (t Ceph) RunString(arg ...string) (string, error) {
 	cmd := "sudo ceph status | awk '/health/ {print $2}'"
-	return fmt.Sprintf(cmd, arg), nil
+	return fmt.Sprint(cmd), nil
 }
 
 func (t Ceph) Handler(in string) ([]Result, error) {

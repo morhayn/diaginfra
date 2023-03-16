@@ -55,3 +55,11 @@ type Hazel struct {
 	Status string `json:"status"`
 	State  string `json:"state"`
 }
+
+func iface(list []string) []interface{} {
+	vals := make([]interface{}, len(list))
+	for i, v := range list {
+		vals[i] = v
+	}
+	return vals
+}

@@ -13,6 +13,7 @@ import (
 	"sync"
 	"time"
 
+	"github.com/morhayn/diaginfra/internal/modules"
 	"golang.org/x/crypto/ssh"
 )
 
@@ -178,7 +179,7 @@ func (c *Comands) buildCmd(list []string) (_, _ chan Out) {
 
 // Swith command for test service
 func (s *CmdExec) swCmd(srv, prg chan Out) {
-	// var err error
+	var err error
 	s.Chan = prg
 	s.Cmd = ""
 	splName := strings.Split(s.Name, ":")
@@ -186,36 +187,49 @@ func (s *CmdExec) swCmd(srv, prg chan Out) {
 	if testSpaceInArg(splName) {
 		return
 	}
-	// test := modules.MapCmd[splName[0]]
-	// s.Cmd, err = test.RunString(splName...)
-	// if err != nil {
-	// s.Cmd = ""
-	// }
-	switch len(splName) {
-	case 1:
-		if cmd, ok := mapCmd[s.Name]; ok {
-			s.Cmd = cmd
-		} else {
-			s.Chan = srv
-			s.Cmd = fmt.Sprintf(mapCmd["Systemd"], s.Name)
-		}
-	case 2:
-		s.Name = splName[0]
-		if cmd, ok := mapCmd[s.Name]; ok {
-			s.PrgName = splName[1]
-			s.Cmd = fmt.Sprintf(cmd, splName[1])
-		}
-	case 3:
-		s.Name = splName[0]
-		if cmd, ok := mapCmd[s.Name]; ok {
-			s.Cmd = fmt.Sprintf(cmd, splName[1], splName[2])
-		}
-	case 4:
-		s.Name = splName[0]
-		if cmd, ok := mapCmd[s.Name]; ok {
-			s.Cmd = fmt.Sprintf(cmd, splName[1], splName[2], splName[3])
+	s.Name = splName[0]
+	if len(splName) == 2 {
+		s.PrgName = splName[1]
+	}
+	fmt.Println(splName)
+	test, ok := modules.MapCmd[splName[0]]
+	if !ok {
+		s.Chan = srv
+		s.Cmd = fmt.Sprintf(mapCmd["Systemd"], s.Name)
+	} else {
+		sp := splName[1:]
+		fmt.Println(sp)
+		s.Cmd, err = test.RunString(sp...)
+		fmt.Println("!!!!", s.Cmd)
+		if err != nil {
+			s.Cmd = ""
 		}
 	}
+	// switch len(splName) {
+	// case 1:
+	// if cmd, ok := mapCmd[s.Name]; ok {
+	// s.Cmd = cmd
+	// } else {
+	// s.Chan = srv
+	// s.Cmd = fmt.Sprintf(mapCmd["Systemd"], s.Name)
+	// }
+	// case 2:
+	// s.Name = splName[0]
+	// if cmd, ok := mapCmd[s.Name]; ok {
+	// s.PrgName = splName[1]
+	// s.Cmd = fmt.Sprintf(cmd, splName[1])
+	// }
+	// case 3:
+	// s.Name = splName[0]
+	// if cmd, ok := mapCmd[s.Name]; ok {
+	// s.Cmd = fmt.Sprintf(cmd, splName[1], splName[2])
+	// }
+	// case 4:
+	// s.Name = splName[0]
+	// if cmd, ok := mapCmd[s.Name]; ok {
+	// s.Cmd = fmt.Sprintf(cmd, splName[1], splName[2], splName[3])
+	// }
+	// }
 	//If Sprintf print error in string MISSING or EXTRA arg
 	r := regexp.MustCompile(reg)
 	mutchErr := r.FindStringIndex(s.Cmd)

@@ -10,7 +10,7 @@ type Tomcat struct{}
 
 func (t Tomcat) RunString(arg ...string) (string, error) {
 	cmd := "curl -u %s:%s http://127.0.0.1:%s/manager/text/list"
-	return fmt.Sprintf(cmd, arg), nil
+	return fmt.Sprintf(cmd, iface(arg)...), nil
 }
 func (t Tomcat) Handler(in string) ([]Result, error) {
 	res := []Result{}

@@ -9,7 +9,7 @@ type Postgresql struct{}
 
 func (t Postgresql) RunString(arg ...string) (string, error) {
 	cmd := "pg_lsclusters | awk 'FNR > 1 {print $4}'"
-	return fmt.Sprintf(cmd, arg), nil
+	return fmt.Sprint(cmd), nil
 }
 
 func (t Postgresql) Handler(in string) ([]Result, error) {

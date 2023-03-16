@@ -11,7 +11,7 @@ type Docker struct{}
 
 func (t Docker) RunString(arg ...string) (string, error) {
 	cmd := `sudo docker ps --format '{"name":"{{.Names}}", "status":"{{.Status}}"}'`
-	return fmt.Sprintf(cmd, arg), nil
+	return fmt.Sprint(cmd), nil
 }
 
 func (t Docker) Handler(in string) ([]Result, error) {

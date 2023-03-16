@@ -50,7 +50,7 @@ func TestSwSmd(t *testing.T) {
 	})
 	t.Run("test error many arg to swCmd", func(t *testing.T) {
 		ssh := CmdExec{
-			Name: "Systemd:Test:ARG",
+			Name: "Tomcat:Test:1234:8080:ARG",
 		}
 		ssh.swCmd(srv, prg)
 		assert.Equal(t, ssh.Cmd, "")
