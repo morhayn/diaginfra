@@ -191,16 +191,13 @@ func (s *CmdExec) swCmd(srv, prg chan Out) {
 	if len(splName) == 2 {
 		s.PrgName = splName[1]
 	}
-	fmt.Println(splName)
 	test, ok := modules.MapCmd[splName[0]]
 	if !ok {
 		s.Chan = srv
 		s.Cmd = fmt.Sprintf(mapCmd["Systemd"], s.Name)
 	} else {
 		sp := splName[1:]
-		fmt.Println(sp)
 		s.Cmd, err = test.RunString(sp...)
-		fmt.Println("!!!!", s.Cmd)
 		if err != nil {
 			s.Cmd = ""
 		}

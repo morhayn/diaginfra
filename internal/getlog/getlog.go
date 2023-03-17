@@ -7,6 +7,7 @@ import (
 	"strconv"
 	"strings"
 
+	"github.com/morhayn/diaginfra/internal/modules"
 	"github.com/morhayn/diaginfra/internal/sshcmd"
 )
 
@@ -25,13 +26,13 @@ func (g GetLog) GetErrors(logs map[string]string, count int, conf sshcmd.Execer)
 	}
 	cmd := ""
 	x := g.Module == "host-manager"
-	if (x) && (g.Module == "manager") {
+	if (x) || (g.Module == "manager") {
 		g.Errors = 0
 		return g
 	}
 	fileTest := fmt.Sprintf("sudo test -f %s%s.log && ", path, g.Module)
 	awk := `awk 'BEGIN { err = 0 } /ERROR/ { err++ } END { print err }'`
-	if g.Service == "docker" {
+	if g.Service == "Docker" {
 		cmd = fmt.Sprintf(`sudo docker logs --tail %d %s | %s`, count, g.Module, awk)
 	} else {
 		cmd = fmt.Sprintf(`%s sudo tail -n %d %s%s.log | %s`, fileTest, count, path, g.Module, awk)
@@ -66,7 +67,6 @@ func (g GetLog) runCmd(cmd string, conf sshcmd.Execer) string {
 	c.Cmd = cmd
 	go conf.Execute(g.Host, c)
 	out := <-c.Chan
-	fmt.Println(out, g.Host)
 	return out.Result
 }
 
@@ -88,23 +88,25 @@ func parse(log string) map[string]int {
 // Get command for service log
 func (g GetLog) cmdReadLog(logs map[string]string, tail int) (string, error) {
 	var cmd string
+	var err error
 	if g.Service == "" {
 		return "", errors.New("Service empty")
 	}
 	if _, ok := logs[g.Service]; !ok && g.Service != "docker" {
 		return "", errors.New("Not logs path in config")
 	}
-	switch g.Service {
-	case "Jar":
-		cmd = fmt.Sprintf("sudo tail -n %d %s%s.log", tail, logs["Jar"], g.Module)
-	case "tomcat":
-		cmd = fmt.Sprintf("sudo tail -n %d %s%s.log", tail, logs["tomcat"], g.Module)
-	case "Tomcat":
-		cmd = fmt.Sprintf("sudo tail -n %d %scatalina.out", tail, logs["tomcat"])
-	case "docker":
-		cmd = fmt.Sprintf("sudo docker logs --tail %d %s", tail, g.Module)
-	default:
-		cmd = fmt.Sprintf("sudo tail -n %d %s", tail, logs[g.Service])
+	if mod, ok := modules.MapCmd[g.Service]; ok {
+		if path, ok := logs[g.Service]; ok {
+			cmd, err = mod.Logs(tail, path, g.Module)
+			if err != nil {
+				return "", err
+			}
+		} else {
+			cmd, err = mod.Logs(tail, g.Module)
+			if err != nil {
+				return "", err
+			}
+		}
 	}
 	return cmd, nil
 }

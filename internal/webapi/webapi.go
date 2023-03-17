@@ -14,6 +14,7 @@ import (
 	"github.com/morhayn/diaginfra/internal/churl"
 	"github.com/morhayn/diaginfra/internal/getlog"
 	"github.com/morhayn/diaginfra/internal/handl"
+	"github.com/morhayn/diaginfra/internal/modules"
 	"github.com/morhayn/diaginfra/internal/sshcmd"
 
 	"github.com/gin-contrib/static"
@@ -54,11 +55,11 @@ type Hosts struct {
 	Stend    []Host      `josn:"stand"`
 }
 type Host struct {
-	Name     string         `json:"name"`
-	Ip       string         `json:"ip"`
-	ListPort []chport.Port  `json:"list_port"`
-	ListSsh  []sshcmd.Out   `json:"list_ssh"`
-	Status   []handl.Result `json:"status"`
+	Name     string           `json:"name"`
+	Ip       string           `json:"ip"`
+	ListPort []chport.Port    `json:"list_port"`
+	ListSsh  []sshcmd.Out     `json:"list_ssh"`
+	Status   []modules.Result `json:"status"`
 }
 
 // Create new structure for loading config file
@@ -67,7 +68,7 @@ func newHost(name, ip string) Host {
 		Name:    name,
 		Ip:      ip,
 		ListSsh: []sshcmd.Out{},
-		Status:  []handl.Result{},
+		Status:  []modules.Result{},
 	}
 }
 
@@ -186,7 +187,7 @@ func RunGin(port chport.Cheker, url churl.Churler, conf sshcmd.Execer, loadData 
 			for _, host := range Status.Stend {
 				for _, st := range host.Status {
 					wg_l.Add(1)
-					go func(ip string, st handl.Result) {
+					go func(ip string, st modules.Result) {
 						defer wg_l.Done()
 						get := getlog.GetLog{
 							Host:    ip,

@@ -5,7 +5,7 @@ import (
 
 	"github.com/morhayn/diaginfra/internal/chport"
 	"github.com/morhayn/diaginfra/internal/churl"
-	"github.com/morhayn/diaginfra/internal/handl"
+	"github.com/morhayn/diaginfra/internal/modules"
 	"github.com/morhayn/diaginfra/internal/sshcmd"
 	"github.com/stretchr/testify/assert"
 )
@@ -85,7 +85,7 @@ func TestCheckHost(t *testing.T) {
 				{Name: "sshd", PrgName: "sshd", Result: "active"},
 				{Name: "tomcat", PrgName: "tomcat", Result: "no-active"},
 			},
-			Status: []handl.Result(nil),
+			Status: []modules.Result(nil),
 		})
 	})
 }

@@ -12,9 +12,13 @@ var (
 		"Postgresql": Postgresql{},
 		"Mongo":      Mongodb{},
 		"Cassandra":  Cassandra{},
+		"Jar":        Jar{},
 	}
 )
 
+type (
+	Handlers = func(string) ([]Result, error)
+)
 type Module interface {
 	RunString(arg ...string) (string, error)
 	Logs(count int, arg ...string) (string, error)
@@ -57,6 +61,23 @@ type Hazel struct {
 	State  string `json:"state"`
 }
 
+func (r *Results) AddResults(o, name string, fn Handlers) {
+	out, err := fn(o)
+	if err != nil {
+		r.Res = append(r.Res, resultFail(name))
+	} else {
+		r.Res = append(r.Res, out...)
+	}
+}
+func resultFail(name string) Result {
+	return Result{
+		Service: name,
+		Status:  name,
+		Result:  "failed",
+		Alarm:   true,
+		Tooltip: "",
+	}
+}
 func iface(list []string) []interface{} {
 	vals := make([]interface{}, len(list))
 	for i, v := range list {

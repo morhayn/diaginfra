@@ -18,7 +18,7 @@ func (t Tomcat) Logs(count int, arg ...string) (string, error) {
 		if arg[1] == "Tomcat" {
 			arg[1] = "catalina.out"
 		}
-		log = fmt.Sprintf("tail -n %d %s%s", count, arg[0], arg[1])
+		log = fmt.Sprintf("sudo tail -n %d %s%s.log", count, arg[0], arg[1])
 	}
 	return log, nil
 }
