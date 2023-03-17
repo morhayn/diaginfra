@@ -24,17 +24,24 @@ func (g GetLog) GetErrors(logs map[string]string, count int, conf sshcmd.Execer)
 		return g
 	}
 	cmd := ""
+	x := g.Module == "host-manager"
+	if (x) && (g.Module == "manager") {
+		g.Errors = 0
+		return g
+	}
+	fileTest := fmt.Sprintf("sudo test -f %s%s.log && ", path, g.Module)
+	awk := `awk 'BEGIN { err = 0 } /ERROR/ { err++ } END { print err }'`
 	if g.Service == "docker" {
-		cmd = fmt.Sprintf(`sudo docker logs --tail %d %s | awk '/ERROR/ { err++ } END { print err }'`, count, g.Module)
+		cmd = fmt.Sprintf(`sudo docker logs --tail %d %s | %s`, count, g.Module, awk)
 	} else {
-		cmd = fmt.Sprintf(`sudo tail -n %d %s%s.log | awk '/ERROR/ { err++ } END { print err }'`, count, path, g.Module)
+		cmd = fmt.Sprintf(`%s sudo tail -n %d %s%s.log | %s`, fileTest, count, path, g.Module, awk)
 	}
 	out := strings.TrimSpace(g.runCmd(cmd, conf))
 	if out != "" {
 		if e, err := strconv.Atoi(out); err == nil {
 			g.Errors = e
 		} else {
-			fmt.Println(err)
+			g.Errors = 999
 		}
 	}
 	return g
@@ -59,6 +66,7 @@ func (g GetLog) runCmd(cmd string, conf sshcmd.Execer) string {
 	c.Cmd = cmd
 	go conf.Execute(g.Host, c)
 	out := <-c.Chan
+	fmt.Println(out, g.Host)
 	return out.Result
 }
 
