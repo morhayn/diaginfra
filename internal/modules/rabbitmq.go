@@ -5,7 +5,7 @@ import "fmt"
 type Rabbitmq struct{}
 
 func (t Rabbitmq) RunString(arg ...string) (string, error) {
-	cmd := "rabbitmqctl status"
+	cmd := "sudo rabbitmqctl status"
 	return fmt.Sprint(cmd), nil
 }
 func (t Rabbitmq) Logs(count int, arg ...string) (string, error) {

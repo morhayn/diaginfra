@@ -8,7 +8,7 @@ import (
 type Postgresql struct{}
 
 func (t Postgresql) RunString(arg ...string) (string, error) {
-	cmd := "pg_lsclusters | awk 'FNR > 1 {print $4}'"
+	cmd := "sudo pg_lsclusters | awk 'FNR > 1 {print $4}'"
 	return fmt.Sprint(cmd), nil
 }
 func (t Postgresql) Logs(count int, arg ...string) (string, error) {
