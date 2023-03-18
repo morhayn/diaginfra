@@ -1,7 +1,7 @@
 package modules
 
 var (
-	MapCmd = map[string]Module{
+	MapService = map[string]Module{
 		"Tomcat":     Tomcat{},
 		"Elastic":    Elastic{},
 		"Kafka":      Kafka{},
@@ -29,8 +29,8 @@ type Results struct {
 }
 type Result struct {
 	Service string `json:"service"`
-	Status  string `json:"status"`
-	Result  string `json:"result"`
+	Output  string `json:"status"`
+	Status  string `json:"result"`
 	Alarm   bool   `json:"alarm"`
 	Tooltip string `json:"tooltip"`
 }
@@ -72,8 +72,8 @@ func (r *Results) AddResults(o, name string, fn Handlers) {
 func resultFail(name string) Result {
 	return Result{
 		Service: name,
-		Status:  name,
-		Result:  "failed",
+		Output:  name,
+		Status:  "failed",
 		Alarm:   true,
 		Tooltip: "",
 	}

@@ -25,8 +25,8 @@ func (t Ceph) Handler(in string) ([]Result, error) {
 	if strings.HasPrefix(in, "HEALTH_OK") {
 		res = append(res, Result{
 			Service: "Ceph",
-			Status:  "Ceph: OK",
-			Result:  "running",
+			Output:  "Ceph: OK",
+			Status:  "running",
 			Alarm:   false,
 			Tooltip: "",
 		})

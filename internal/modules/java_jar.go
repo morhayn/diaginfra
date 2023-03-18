@@ -28,8 +28,8 @@ func (t Jar) Handler(in string) ([]Result, error) {
 	}
 	res = append(res, Result{
 		Service: "Jar",
-		Status:  in,
-		Result:  st,
+		Output:  in,
+		Status:  st,
 		Alarm:   false,
 		Tooltip: "",
 	})

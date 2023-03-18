@@ -31,8 +31,8 @@ func (t Elastic) Handler(in string) ([]Result, error) {
 		elastic.Cluster_name, elastic.Number_of_nodes, elastic.Status, elastic.Task_max_waiting_in_queue_millis)
 	res = append(res, Result{
 		Service: "Elastic",
-		Status:  result,
-		Result:  "running",
+		Output:  result,
+		Status:  "running",
 		Alarm:   false,
 		Tooltip: "",
 	})

@@ -30,16 +30,16 @@ func (t Hazelcast) Handler(in string) ([]Result, error) {
 	if hazel.State == "active" && hazel.Status == "success" {
 		res = append(res, Result{
 			Service: "Hazelcast",
-			Status:  "HAZEL:" + hazel.Status,
-			Result:  "running",
+			Output:  "HAZEL: " + hazel.Status,
+			Status:  "running",
 			Alarm:   false,
 			Tooltip: "",
 		})
 	} else {
 		res = append(res, Result{
 			Service: "Hazelcast",
-			Status:  "HAZEL:" + hazel.Status,
-			Result:  "running",
+			Output:  "HAZEL:" + hazel.Status,
+			Status:  "running",
 			Alarm:   false,
 			Tooltip: "",
 		})

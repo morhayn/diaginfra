@@ -19,8 +19,9 @@ func (t Tomcat) Logs(count int, arg ...string) (string, error) {
 			arg[1] = "catalina.out"
 		}
 		log = fmt.Sprintf("sudo tail -n %d %s%s.log", count, arg[0], arg[1])
+		return log, nil
 	}
-	return log, nil
+	return "", fmt.Errorf("arg length less 2")
 }
 func (t Tomcat) Handler(in string) ([]Result, error) {
 	res := []Result{}
@@ -33,8 +34,8 @@ func (t Tomcat) Handler(in string) ([]Result, error) {
 				name_war := strings.TrimPrefix(strings.TrimSpace(arr_out[0]), "/")
 				res = append(res, Result{
 					Service: "Tomcat",
-					Status:  name_war,
-					Result:  arr_out[1],
+					Output:  name_war,
+					Status:  arr_out[1],
 					Alarm:   false,
 					Tooltip: "",
 				})
@@ -44,7 +45,7 @@ func (t Tomcat) Handler(in string) ([]Result, error) {
 			return nil, fmt.Errorf("Error response count line 0")
 		}
 		sort.Slice(res, func(p, q int) bool {
-			return res[p].Result > res[q].Result
+			return res[p].Status > res[q].Status
 		})
 		return res, nil
 	} else {

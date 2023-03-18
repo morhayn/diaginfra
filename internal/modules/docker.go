@@ -37,15 +37,15 @@ func (t Docker) Handler(in string) ([]Result, error) {
 			}
 			res = append(res, Result{
 				Service: "Docker",
-				Status:  docker.Name,
-				Result:  "running",
+				Output:  docker.Name,
+				Status:  "running",
 				Alarm:   alarm,
 				Tooltip: "",
 			})
 		}
 	}
 	sort.Slice(res, func(p, q int) bool {
-		return res[p].Result > res[q].Result
+		return res[p].Status > res[q].Status
 	})
 	return res, nil
 }

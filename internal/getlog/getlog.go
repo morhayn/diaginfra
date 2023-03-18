@@ -92,10 +92,10 @@ func (g GetLog) cmdReadLog(logs map[string]string, tail int) (string, error) {
 	if g.Service == "" {
 		return "", errors.New("Service empty")
 	}
-	if _, ok := logs[g.Service]; !ok && g.Service != "docker" {
+	if _, ok := logs[g.Service]; !ok && g.Service != "Docker" {
 		return "", errors.New("Not logs path in config")
 	}
-	if mod, ok := modules.MapCmd[g.Service]; ok {
+	if mod, ok := modules.MapService[g.Service]; ok {
 		if path, ok := logs[g.Service]; ok {
 			cmd, err = mod.Logs(tail, path, g.Module)
 			if err != nil {

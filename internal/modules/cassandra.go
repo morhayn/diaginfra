@@ -26,8 +26,8 @@ func (t Cassandra) Handler(in string) ([]Result, error) {
 	if len(spl_res) > 4 {
 		res = append(res, Result{
 			Service: "Cassandra",
-			Status:  spl_res[5],
-			Result:  "running",
+			Output:  spl_res[5],
+			Status:  "running",
 			Alarm:   false,
 			Tooltip: "",
 		})

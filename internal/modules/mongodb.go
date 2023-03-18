@@ -21,8 +21,8 @@ func (t Mongodb) Handler(in string) ([]Result, error) {
 	res := []Result{}
 	res = append(res, Result{
 		Service: "Kafka",
-		Status:  in,
-		Result:  "running",
+		Output:  in,
+		Status:  "running",
 		Alarm:   false,
 		Tooltip: "",
 	})

@@ -191,7 +191,7 @@ func (s *CmdExec) swCmd(srv, prg chan Out) {
 	if len(splName) == 2 {
 		s.PrgName = splName[1]
 	}
-	test, ok := modules.MapCmd[splName[0]]
+	test, ok := modules.MapService[splName[0]]
 	if !ok {
 		s.Chan = srv
 		s.Cmd = fmt.Sprintf(mapCmd["Systemd"], s.Name)
