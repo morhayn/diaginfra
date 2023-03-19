@@ -14,7 +14,24 @@ func TestRabbitRunString(t *testing.T) {
 		t.Fatal("answer not right ", res)
 	}
 }
-func TestRabbitLogs(t *testing.T) {}
+func TestRabbitLogs(t *testing.T) {
+	rabbit := Rabbitmq{}
+	t.Run("simple ", func(t *testing.T) {
+		res, err := rabbit.Logs(300, "/log/rabbit.log")
+		if err != nil {
+			t.Fatal(err)
+		}
+		if res != "sudo tail -n 300 /log/rabbit.log" {
+			t.Fatal("result not right ", res)
+		}
+	})
+	t.Run("short in", func(t *testing.T) {
+		_, err := rabbit.Logs(300)
+		if err == nil {
+			t.Fatal("no error to short in")
+		}
+	})
+}
 func TestRabbitHandler(t *testing.T) {
 	// in := `
 	// Status of node rabbit@scuo-rg-demo-tek ...
