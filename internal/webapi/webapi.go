@@ -192,7 +192,7 @@ func RunGin(port chport.Cheker, url churl.Churler, conf sshcmd.Execer, loadData 
 						get := getlog.GetLog{
 							Host:    ip,
 							Service: st.Service,
-							Module:  st.Status,
+							Module:  st.Output,
 						}
 						out := get.GetErrors(loadData.Logs, loadData.CountLog, conf)
 						ch <- out
