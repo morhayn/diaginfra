@@ -1,0 +1,10 @@
+
+name: "diaginfra"
+
+resources:
+  requests:
+    memory: 1024Mi
+    cpu: 250m
+  limits:
+    memory: 1024Mi
+    cpu: 1000m

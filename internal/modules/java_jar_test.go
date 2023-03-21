@@ -17,11 +17,11 @@ func TestJarRunString(t *testing.T) {
 func TestJarLogs(t *testing.T) {
 	jar := Jar{}
 	t.Run("simple ", func(t *testing.T) {
-		res, err := jar.Logs(300, "/log/jar.log")
+		res, err := jar.Logs(300, "/log/jar/", "service")
 		if err != nil {
 			t.Fatal(err)
 		}
-		if res != "sudo tail -n 300 /log/jar.log" {
+		if res != "sudo tail -n 300 /log/jar/service.log" {
 			t.Fatal("result not right ", res)
 		}
 	})

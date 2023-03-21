@@ -9,7 +9,7 @@ type Jar struct{}
 
 func (t Jar) RunString(arg ...string) (string, error) {
 	cmd := "sudo systemctl is-active %s"
-	return fmt.Sprintf(cmd, iface(arg)), nil
+	return fmt.Sprintf(cmd, iface(arg)...), nil
 }
 func (t Jar) Logs(count int, arg ...string) (string, error) {
 	log := ""
@@ -17,7 +17,7 @@ func (t Jar) Logs(count int, arg ...string) (string, error) {
 		log = fmt.Sprintf("sudo tail -n %d %s%s.log", count, arg[0], arg[1])
 		return log, nil
 	}
-	return "", fmt.Errorf("not path to log Kafka %s", arg)
+	return "", fmt.Errorf("not path to log Jar %s", arg)
 }
 
 func (t Jar) Handler(in string) ([]Result, error) {

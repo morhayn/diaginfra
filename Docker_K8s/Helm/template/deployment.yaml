@@ -1,0 +1,44 @@
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ .Values.name }}
+  labels:
+    app: {{ .Values.name }}
+spec:
+  replicas: {{ .Values.replicaCount }}
+  selector:
+    matchLabels:
+      app: {{ .Values.name }}
+  strategy:
+    rollingUpdate:
+      maxSurge: 1
+      maxUnavailable: 1
+  template:
+    metadata:
+      labels:
+        app: {{ .Values.name }}
+    spec:
+      affinity:
+        podAntiAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+          - labelSelector:
+              matchExpressions:
+              - key: app
+                operator: In
+                values:
+                - {{ .Values.client.name }}
+            topologyKey: "kubernetes.io/hostname"
+      containers:
+      - name: {{ .Values.name }}
+        image: {{ .Values.registry }}/{{ .Values.image }}:{{ .Values.tag }}
+        ports:
+        - containerPort: 3000
+        resources:
+          requests:
+            memory: {{ .Values.resources.requests.memory | quote }}
+          limits:
+            memory: {{ .Values.resources.limits.memory | quote }}
+      imagePullSecrets:
+      - name: {{ .Chart.Name }}-docker-secret
+

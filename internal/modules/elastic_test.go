@@ -32,4 +32,14 @@ func TestElasticLogs(t *testing.T) {
 		}
 	})
 }
-func TestElasticHandler(t *testing.T) {}
+func TestElasticHandler(t *testing.T) {
+	elastic := Elastic{}
+	in := `{"cluster_name":"TestCluster","status":"ok","number_og_nodes":"1","task_max_waiting_in_queue_millis":"10"}`
+	res, err := elastic.Handler(in)
+	if err != nil {
+		t.Fatal(err)
+	}
+	if res[0].Output != "ELASTIC: TestCluster NODES: 1  STATUS: ok  Waiting in QUEUE: 10" {
+		t.Fatal("result not right ", res[0])
+	}
+}
