@@ -34,7 +34,7 @@ func TestElasticLogs(t *testing.T) {
 }
 func TestElasticHandler(t *testing.T) {
 	elastic := Elastic{}
-	in := `{"cluster_name":"TestCluster","status":"ok","number_og_nodes":"1","task_max_waiting_in_queue_millis":"10"}`
+	in := `{"cluster_name":"TestCluster","status":"ok","number_of_nodes": 1,"task_max_waiting_in_queue_millis": 10}`
 	res, err := elastic.Handler(in)
 	if err != nil {
 		t.Fatal(err)

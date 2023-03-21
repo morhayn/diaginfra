@@ -10,7 +10,7 @@ func TestMongoRunString(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
-	if res != `mongo -u user -p "pass"  --eval 'db.stats()'` {
+	if res != `mongo -u user -p "pass"  --eval 'db.serverStatus()'` {
 		t.Fatal("result not right ", res)
 	}
 }

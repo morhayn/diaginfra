@@ -25,7 +25,7 @@ func (t Postgresql) Handler(in string) ([]Result, error) {
 	if strings.HasPrefix(in, "online") {
 		res = append(res, Result{
 			Service: "Postgresql",
-			Output:  "POSSTGERSQL: OK",
+			Output:  "POSTGRESQL: OK",
 			Status:  "running",
 			Alarm:   false,
 			Tooltip: "",

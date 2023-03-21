@@ -24,21 +24,23 @@ func (t Docker) Logs(count int, arg ...string) (string, error) {
 func (t Docker) Handler(in string) ([]Result, error) {
 	var docker = Dock{}
 	var res = []Result{}
-	spl_res := strings.Split(in, "\n")
-	for _, obj := range spl_res {
+	lines := strings.Split(in, "\n")
+	for _, obj := range lines {
 		if strings.TrimSpace(obj) != "" {
 			err := json.Unmarshal([]byte(obj), &docker)
 			if err != nil {
 				return nil, err
 			}
 			alarm := false
+			status := "running"
 			if !(strings.HasPrefix(docker.Status, "Up")) {
 				alarm = true
+				status = "failed"
 			}
 			res = append(res, Result{
 				Service: "Docker",
 				Output:  docker.Name,
-				Status:  "running",
+				Status:  status,
 				Alarm:   alarm,
 				Tooltip: "",
 			})

@@ -5,7 +5,7 @@ import "fmt"
 type Mongodb struct{}
 
 func (t Mongodb) RunString(arg ...string) (string, error) {
-	cmd := `mongo -u %s -p "%s"  --eval 'db.stats()'`
+	cmd := `mongo -u %s -p "%s"  --eval 'db.serverStatus()'`
 	return fmt.Sprintf(cmd, iface(arg)...), nil
 }
 func (t Mongodb) Logs(count int, arg ...string) (string, error) {

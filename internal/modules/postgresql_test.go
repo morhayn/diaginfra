@@ -32,4 +32,23 @@ func TestPostgresLogs(t *testing.T) {
 		}
 	})
 }
-func TestPostgresHandler(t *testing.T) {}
+func TestPostgresHandler(t *testing.T) {
+	postgres := Postgresql{}
+	t.Run("running", func(t *testing.T) {
+		in := "online"
+		res, err := postgres.Handler(in)
+		if err != nil {
+			t.Fatal(err)
+		}
+		if res[0].Output != "POSTGRESQL: OK" {
+			t.Fatal("result not right ", res[0])
+		}
+	})
+	t.Run("sttoped", func(t *testing.T) {
+		in := "sttoped"
+		_, err := postgres.Handler(in)
+		if err == nil {
+			t.Fatal("Not error !!!")
+		}
+	})
+}

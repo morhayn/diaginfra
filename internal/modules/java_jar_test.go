@@ -32,4 +32,26 @@ func TestJarLogs(t *testing.T) {
 		}
 	})
 }
-func TestJarHandler(t *testing.T) {}
+func TestJarHandler(t *testing.T) {
+	jar := Jar{}
+	t.Run("running", func(t *testing.T) {
+		in := "active"
+		res, err := jar.Handler(in)
+		if err != nil {
+			t.Fatal(err)
+		}
+		if res[0].Status != "running" {
+			t.Fatal("result not right ", res[0])
+		}
+	})
+	t.Run("not running", func(t *testing.T) {
+		in := "no active"
+		res, err := jar.Handler(in)
+		if err != nil {
+			t.Fatal(err)
+		}
+		if res[0].Status != "failed" {
+			t.Fatal("result not right ", res[0])
+		}
+	})
+}
