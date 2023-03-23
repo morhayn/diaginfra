@@ -72,7 +72,7 @@ func newHost(name, ip string) Host {
 	}
 }
 
-// Read Config file and unmarshall data in structure
+// ReadConfig Read Config file and unmarshall data in structure
 func (y YumInit) ReadConfig(file string) YumInit {
 	f, err := ioutil.ReadFile(file)
 	if err != nil {
@@ -134,7 +134,7 @@ func serverHandler(loadData YumInit, port chport.Cheker, url churl.Churler, conf
 	return result
 }
 
-// Open terminal for administrating servers
+// OpenTerminal Open terminal for administrating servers
 func OpenTerminal(t Terminal, username string) {
 	if RunOps != "server" {
 		desktop := os.Getenv("DESKTOP_SESSION")
@@ -149,7 +149,7 @@ func OpenTerminal(t Terminal, username string) {
 	}
 }
 
-// Main package run this function
+// RunGin Main package run this function
 // Run web server.
 func RunGin(port chport.Cheker, url churl.Churler, conf sshcmd.Execer, loadData YumInit) {
 	router := gin.Default()

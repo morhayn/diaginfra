@@ -5,6 +5,7 @@ import (
 	"github.com/morhayn/diaginfra/internal/sshcmd"
 )
 
+// HandkeResult -
 func HandleResult(list []sshcmd.Out) []modules.Result {
 	var result modules.Results
 	for _, res := range list {

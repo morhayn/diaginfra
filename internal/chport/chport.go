@@ -29,6 +29,9 @@ func sortPorts(list_port []Port) {
 }
 
 // Check one port and return result in chanel
+// ip - address server '10.0.0.1'
+// port - '9200'
+// res - channel to CheckPort
 func (p Port) Check(ip, port string, res chan Port) {
 	p.Port = port
 	p.Status = "failed"
@@ -41,7 +44,9 @@ func (p Port) Check(ip, port string, res chan Port) {
 	res <- p
 }
 
-// Run goroutine to check all ports on server
+// CheckPort  - run goroutine to check all ports on server
+// ip - address server, ports - array number check ports
+// p - interface
 func CheckPort(ip string, ports []string, p Cheker) []Port {
 	res := make(chan Port)
 	result := []Port{}

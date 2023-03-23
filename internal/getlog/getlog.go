@@ -18,7 +18,7 @@ type GetLog struct {
 	Errors  int    `json:"errors"`
 }
 
-// Get count ERROR in logs java programs
+// GetErrors - get count ERROR in logs java programs
 func (g GetLog) GetErrors(logs map[string]string, count int, conf sshcmd.Execer) GetLog {
 	path, ok := logs[g.Service]
 	if !ok {
@@ -48,7 +48,7 @@ func (g GetLog) GetErrors(logs map[string]string, count int, conf sshcmd.Execer)
 	return g
 }
 
-// Get tail logs service to displey it user
+// GetLogs get tail logs service to displey it user
 func (g GetLog) GetLogs(logs map[string]string, count int, conf sshcmd.Execer) string {
 	cmd, err := g.cmdReadLog(logs, count)
 	if err != nil {

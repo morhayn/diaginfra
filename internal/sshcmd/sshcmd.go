@@ -19,22 +19,9 @@ import (
 
 var (
 	mapCmd = map[string]string{
-		"Tomcat":        "curl -u %s:%s http://127.0.0.1:%s/manager/text/list",
-		"Jar":           "sudo systemctl is-active %s",
-		"WarTomcatInfo": "sudo find %s -name build-info.properties -exec cat {} \\; | awk -F'[=]' '/time|version|artifact/ {print $2}'",
-		"Elastic":       "curl -X GET http://127.0.0.1:9200/_cluster/health",
-		"Kafka":         "export KAFAK_OPTS='-Djava.security.auth.login.config=/etc/kafka/kafka_jaas.conf'; /d01/kafka/bin/kafka-topics.sh --list --zookeeper localhost:2181",
-		"Hazelcast":     `curl --data "%s&%s" --silent "http://127.0.0.1:5701/hazelcast/rest/management/cluster/state"`,
-		"Rabbit":        "rabbitmqctl status",
-		"Ceph":          "sudo ceph status | awk '/health/ {print $2}'",
-		"Docker":        `sudo docker ps --format '{"name":"{{.Names}}", "status":"{{.Status}}"}'`,
-		"Postgresql":    "pg_lsclusters | awk 'FNR > 1 {print $4}'",
-		"Mongo":         `mongo -u %s -p "%s"  --eval 'db.stats()'`, // rs.status()
-		"Cassandra":     "nodetool status",
-		"Prg":           "sudo systemctl is-active %s",
-		"DiskFree":      "df / | awk 'FNR > 1 {print $5}'",
-		"LoadAvg":       "awk '{print $1}' /proc/loadavg",
-		"Systemd":       "sudo systemctl is-active %s",
+		"DiskFree": "df / | awk 'FNR > 1 {print $5}'",
+		"LoadAvg":  "awk '{print $1}' /proc/loadavg",
+		"Systemd":  "sudo systemctl is-active %s",
 	}
 	reg = `%!.?\([EXTRA|MISSING]`
 )
@@ -64,7 +51,7 @@ type Out struct {
 	PrgName string `json:"prgname"`
 }
 
-// Configure ssh connection to servers
+// Init_ssh Configure ssh connection to servers
 func (s *SshConfig) Init_ssh(username, port string) {
 	s.sshPort = port
 	key, err := os.ReadFile(os.Getenv("HOME") + "/.ssh/id_rsa")
@@ -84,7 +71,7 @@ func (s *SshConfig) Init_ssh(username, port string) {
 	}
 }
 
-// Create struscture with result shell command
+// NewOut  Create struscture with result shell command
 func NewOut(name, prgName, res string) Out {
 	return Out{Name: name, PrgName: prgName, Result: res}
 }
@@ -94,7 +81,7 @@ func newOutFail(name, prgName string) Out {
 	return Out{Name: name, PrgName: prgName, Result: "failed"}
 }
 
-// Runing gourutine with executing shell command check service
+// Run Runing gourutine with executing shell command check service
 // Grouping result executing command
 func Run(ip string, list []string, conf Execer) ([]Out, []Out, error) {
 	var wg sync.WaitGroup
@@ -131,18 +118,6 @@ func Run(ip string, list []string, conf Execer) ([]Out, []Out, error) {
 		}
 	}
 }
-
-// Check Jar service  how programm
-// func (c *Comands) jarsCmd(stend string, jars []string, srv chan Out) {
-// for _, jar := range jars {
-// j := CmdExec{
-// Name: jar,
-// Chan: srv,
-// Cmd:  fmt.Sprintf(mapCmd["Jar"], jar),
-// }
-// c.Comm = append(c.Comm, j)
-// }
-// }
 
 // Build structure for check service and programm
 // chan srv for service (systemd check)
@@ -202,31 +177,6 @@ func (s *CmdExec) swCmd(srv, prg chan Out) {
 			s.Cmd = ""
 		}
 	}
-	// switch len(splName) {
-	// case 1:
-	// if cmd, ok := mapCmd[s.Name]; ok {
-	// s.Cmd = cmd
-	// } else {
-	// s.Chan = srv
-	// s.Cmd = fmt.Sprintf(mapCmd["Systemd"], s.Name)
-	// }
-	// case 2:
-	// s.Name = splName[0]
-	// if cmd, ok := mapCmd[s.Name]; ok {
-	// s.PrgName = splName[1]
-	// s.Cmd = fmt.Sprintf(cmd, splName[1])
-	// }
-	// case 3:
-	// s.Name = splName[0]
-	// if cmd, ok := mapCmd[s.Name]; ok {
-	// s.Cmd = fmt.Sprintf(cmd, splName[1], splName[2])
-	// }
-	// case 4:
-	// s.Name = splName[0]
-	// if cmd, ok := mapCmd[s.Name]; ok {
-	// s.Cmd = fmt.Sprintf(cmd, splName[1], splName[2], splName[3])
-	// }
-	// }
 	//If Sprintf print error in string MISSING or EXTRA arg
 	r := regexp.MustCompile(reg)
 	mutchErr := r.FindStringIndex(s.Cmd)
@@ -235,7 +185,7 @@ func (s *CmdExec) swCmd(srv, prg chan Out) {
 	}
 }
 
-// Run shell command in ssh
+// Execute Run shell command in ssh
 func (conf SshConfig) Execute(ip string, cmd CmdExec) {
 	var d net.Dialer
 	connStr := fmt.Sprintf("%s:%s", ip, conf.sshPort)

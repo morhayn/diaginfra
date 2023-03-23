@@ -55,7 +55,7 @@ func (u Url) checkHttps(url string, res chan Url) {
 	res <- u
 }
 
-// Run gourutine for all check urls
+// CheckUrl - run gourutine for all check urls
 func CheckUrl(urls []string, u Churler) []Url {
 	res := make(chan Url)
 	result := []Url{}
