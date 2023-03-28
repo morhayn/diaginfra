@@ -36,6 +36,9 @@ func (m mockExec) Execute(ip string, c sshcmd.CmdExec) {
 		c.Chan <- sshcmd.NewOut(c.Name, c.Name, "no-active")
 	}
 }
+func (m mockExec) GetSshPort() string {
+	return "22"
+}
 
 func TestCheckHost(t *testing.T) {
 	// mocksshcmdRun = func(ip, stend string, list []string, conf sshcmd.Execer) ([]sshcmd.Out, []sshcmd.Out, error) {

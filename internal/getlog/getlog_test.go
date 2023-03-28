@@ -13,6 +13,9 @@ type mockExec struct {
 func (m mockExec) Execute(ip string, c sshcmd.CmdExec) {
 	c.Chan <- sshcmd.NewOut("test", "test", c.Cmd)
 }
+func (m mockExec) GetSshPort() string {
+	return "22"
+}
 func TestGetLogs(t *testing.T) {
 	mock := mockExec{}
 	g := GetLog{

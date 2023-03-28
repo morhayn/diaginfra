@@ -88,20 +88,24 @@ func (y YumInit) ReadConfig(file string) YumInit {
 }
 
 // Check ssh port if ssh port failed not nid run ssh command to server
-func checkSshPort(ports []chport.Port) bool {
-	for _, p := range ports {
-		if p.Port == "22" && p.Status == "failed" {
-			return false
-		}
+func checkSshPort(ip, sshPort string, port chport.Cheker) bool {
+	if check := chport.CheckPort(ip, []string{sshPort}, port); check[0].Status == "failed" {
+		return false
 	}
 	return true
+	// for _, p := range ports {
+	// if p.Port == "22" && p.Status == "failed" {
+	// return false
+	// }
+	// }
+	// return true
 }
 
 // Run test command to one server
 func checkHost(host Init, ch chan Host, port chport.Cheker, conf sshcmd.Execer) {
 	h := newHost(host.Name, host.Ip)
 	h.ListPort = chport.CheckPort(host.Ip, host.ListPorts, port)
-	if checkSshPort(h.ListPort) {
+	if checkSshPort(host.Ip, conf.GetSshPort(), port) {
 		srv, prg, _ := sshcmd.Run(host.Ip, host.ListService, conf)
 		h.ListSsh = srv
 		h.Status = handl.HandleResult(prg)
@@ -185,7 +189,7 @@ func RunGin(port chport.Cheker, url churl.Churler, conf sshcmd.Execer, loadData 
 		res := []getlog.GetLog{}
 		go func() {
 			for _, host := range Status.Stend {
-				if checkSshPort(host.ListPort) {
+				if checkSshPort(host.Ip, conf.GetSshPort(), port) {
 					for _, st := range host.Status {
 						wg_l.Add(1)
 						go func(host Host, st modules.Result) {

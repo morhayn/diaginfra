@@ -28,6 +28,7 @@ var (
 
 type Execer interface {
 	Execute(string, CmdExec)
+	GetSshPort() string
 }
 
 type SshConfig struct {
@@ -69,6 +70,9 @@ func (s *SshConfig) Init_ssh(username, port string) {
 		},
 		HostKeyCallback: ssh.InsecureIgnoreHostKey(),
 	}
+}
+func (s SshConfig) GetSshPort() string {
+	return s.sshPort
 }
 
 // NewOut  Create struscture with result shell command

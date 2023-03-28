@@ -59,14 +59,12 @@ func TestCheck(t *testing.T) {
 	t.Run("Check port", func(t *testing.T) {
 		ch := make(chan Port)
 		var p = Port{Port: "5000", Status: "failed"}
-		wg_p.Add(1)
 		go p.Check("127.0.0.1", p.Port, ch)
 		r := <-ch
 		assert.Equal(t, r, Port{Port: "5000", Status: "failed"})
 	})
 	t.Run("Check successfull ports check", func(t *testing.T) {
 		ch := make(chan Port)
-		wg_p.Add(1)
 		var p = Port{Port: "5000", Status: "failed"}
 		go p.Check("127.0.0.1", p.Port, ch)
 		l, err := net.Listen("tcp", "127.0.0.1:5000")

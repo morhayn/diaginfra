@@ -8,8 +8,6 @@ import (
 	"time"
 )
 
-var wg_p sync.WaitGroup
-
 // Interface for testing
 type Cheker interface {
 	Check(string, string, chan Port)
@@ -48,6 +46,7 @@ func (p Port) Check(ip, port string, res chan Port) {
 // ip - address server, ports - array number check ports
 // p - interface
 func CheckPort(ip string, ports []string, p Cheker) []Port {
+	var wg_p sync.WaitGroup
 	res := make(chan Port)
 	result := []Port{}
 	go func() {
