@@ -189,7 +189,7 @@ func (s *CmdExec) swCmd(srv, prg chan Out) {
 func (conf SshConfig) Execute(ip string, cmd CmdExec) {
 	var d net.Dialer
 	connStr := fmt.Sprintf("%s:%s", ip, conf.sshPort)
-	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Minute)
+	ctx, cancel := context.WithTimeout(context.Background(), 2*time.Minute)
 	defer cancel()
 	conn, err := d.DialContext(ctx, "tcp", connStr)
 	defer conn.Close()

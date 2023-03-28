@@ -5,7 +5,9 @@ import (
 	"strings"
 )
 
-type Jar struct{}
+type Jar struct {
+	name string
+}
 
 func (t Jar) RunString(arg ...string) (string, error) {
 	cmd := "sudo systemctl is-active %s"
@@ -28,7 +30,7 @@ func (t Jar) Handler(in string) ([]Result, error) {
 	}
 	res = append(res, Result{
 		Service: "Jar",
-		Output:  in,
+		Output:  t.name,
 		Status:  st,
 		Alarm:   false,
 		Tooltip: "",

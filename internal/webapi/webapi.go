@@ -185,18 +185,20 @@ func RunGin(port chport.Cheker, url churl.Churler, conf sshcmd.Execer, loadData 
 		res := []getlog.GetLog{}
 		go func() {
 			for _, host := range Status.Stend {
-				for _, st := range host.Status {
-					wg_l.Add(1)
-					go func(ip string, st modules.Result) {
-						defer wg_l.Done()
-						get := getlog.GetLog{
-							Host:    ip,
-							Service: st.Service,
-							Module:  st.Output,
-						}
-						out := get.GetErrors(loadData.Logs, loadData.CountLog, conf)
-						ch <- out
-					}(host.Ip, st)
+				if checkSshPort(host.ListPort) {
+					for _, st := range host.Status {
+						wg_l.Add(1)
+						go func(host Host, st modules.Result) {
+							defer wg_l.Done()
+							get := getlog.GetLog{
+								Host:    host.Ip,
+								Service: st.Service,
+								Module:  st.Output,
+							}
+							out := get.GetErrors(loadData.Logs, loadData.CountLog, conf)
+							ch <- out
+						}(host, st)
+					}
 				}
 			}
 			wg_l.Wait()

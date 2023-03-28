@@ -61,11 +61,14 @@ type Hazel struct {
 	State  string `json:"state"`
 }
 
-func (r *Results) AddResults(o, name string, fn Handlers) {
+func (r *Results) AddResults(o, name string, prgName string, fn Handlers) {
 	out, err := fn(o)
 	if err != nil {
 		r.Res = append(r.Res, resultFail(name))
 	} else {
+		if name == "Jar" {
+			out[0].Output = prgName
+		}
 		r.Res = append(r.Res, out...)
 	}
 }
