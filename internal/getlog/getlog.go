@@ -30,12 +30,15 @@ func (g GetLog) GetErrors(logs map[string]string, count int, conf sshcmd.Execer)
 		g.Errors = 0
 		return g
 	}
-	fileTest := fmt.Sprintf("sudo test -f %s%s.log && ", path, g.Module)
 	awk := `awk 'BEGIN { err = 0 } /ERROR/ { err++ } END { print err }'`
 	if g.Service == "Docker" {
 		cmd = fmt.Sprintf(`sudo docker logs --tail %d %s | %s`, count, g.Module, awk)
-	} else {
+	} else if g.Service == "Tomcat" || g.Service == "Jar" {
+		fileTest := fmt.Sprintf("sudo test -f %s%s.log && ", path, g.Module)
 		cmd = fmt.Sprintf(`%s sudo tail -n %d %s%s.log | %s`, fileTest, count, path, g.Module, awk)
+	} else {
+		fileTest := fmt.Sprintf("sudo test -f %s && ", path)
+		cmd = fmt.Sprintf(`%s sudo tail -n %d %s | %s`, fileTest, count, path, awk)
 	}
 	out := strings.TrimSpace(g.runCmd(cmd, conf))
 	if out != "" {
