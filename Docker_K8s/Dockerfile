@@ -24,4 +24,4 @@ COPY ../conf/config.yaml /app/conf/
 # This container exposes port 3000 to the outside world
 EXPOSE 3000
 # Run the binary program produced by `go install`
-CMD ["/app/diaginfra"]
+CMD ["/app/diaginfra server"]

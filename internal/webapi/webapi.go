@@ -93,12 +93,6 @@ func checkSshPort(ip, sshPort string, port chport.Cheker) bool {
 		return false
 	}
 	return true
-	// for _, p := range ports {
-	// if p.Port == "22" && p.Status == "failed" {
-	// return false
-	// }
-	// }
-	// return true
 }
 
 // Run test command to one server
@@ -109,6 +103,10 @@ func checkHost(host Init, ch chan Host, port chport.Cheker, conf sshcmd.Execer) 
 		srv, prg, _ := sshcmd.Run(host.Ip, host.ListService, conf)
 		h.ListSsh = srv
 		h.Status = handl.HandleResult(prg)
+		sort.Slice(h.Status, func(p, q int) bool {
+			return h.Status[p].Status < h.Status[q].Status
+		})
+
 	}
 	ch <- h
 }
