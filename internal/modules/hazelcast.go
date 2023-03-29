@@ -3,6 +3,8 @@ package modules
 import (
 	"encoding/json"
 	"fmt"
+
+	"github.com/morhayn/diaginfra/internal/global"
 )
 
 type Hazelcast struct{}
@@ -20,15 +22,15 @@ func (t Hazelcast) Logs(count int, arg ...string) (string, error) {
 	return "", fmt.Errorf("not path to log Hazelcast %s", arg)
 }
 
-func (t Hazelcast) Handler(in string) ([]Result, error) {
-	var res = []Result{}
+func (t Hazelcast) Handler(in string) ([]global.Result, error) {
+	var res = []global.Result{}
 	var hazel = Hazel{}
 	err := json.Unmarshal([]byte(in), &hazel)
 	if err != nil {
 		return nil, err
 	}
 	if hazel.State == "active" && hazel.Status == "success" {
-		res = append(res, Result{
+		res = append(res, global.Result{
 			Service: "Hazelcast",
 			Output:  "HAZEL: " + hazel.Status,
 			Status:  "running",
@@ -36,7 +38,7 @@ func (t Hazelcast) Handler(in string) ([]Result, error) {
 			Tooltip: "",
 		})
 	} else {
-		res = append(res, Result{
+		res = append(res, global.Result{
 			Service: "Hazelcast",
 			Output:  "HAZEL:" + hazel.Status,
 			Status:  "running",

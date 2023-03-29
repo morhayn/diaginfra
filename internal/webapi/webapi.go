@@ -13,7 +13,6 @@ import (
 	"github.com/morhayn/diaginfra/internal/getlog"
 	"github.com/morhayn/diaginfra/internal/global"
 	"github.com/morhayn/diaginfra/internal/handl"
-	"github.com/morhayn/diaginfra/internal/modules"
 	"github.com/morhayn/diaginfra/internal/sshcmd"
 
 	"github.com/gin-contrib/static"
@@ -49,7 +48,7 @@ func newHost(name, ip string) global.Host {
 		Name:    name,
 		Ip:      ip,
 		ListSsh: []global.Out{},
-		Status:  []modules.Result{},
+		Status:  []global.Result{},
 	}
 }
 
@@ -156,7 +155,7 @@ func RunGin(port chport.Cheker, url churl.Churler, conf sshcmd.Execer, loadData 
 				if checkSshPort(host.Ip, conf.GetSshPort(), port) {
 					for _, st := range host.Status {
 						wg_l.Add(1)
-						go func(host global.Host, st modules.Result) {
+						go func(host global.Host, st global.Result) {
 							defer wg_l.Done()
 							get := getlog.GetLog{
 								Host:    host.Ip,

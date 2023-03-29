@@ -1,6 +1,10 @@
 package modules
 
-import "fmt"
+import (
+	"fmt"
+
+	"github.com/morhayn/diaginfra/internal/global"
+)
 
 type Kafka struct{}
 
@@ -17,9 +21,9 @@ func (t Kafka) Logs(count int, arg ...string) (string, error) {
 	return "", fmt.Errorf("not path to log Kafka %s", arg)
 }
 
-func (t Kafka) Handler(in string) ([]Result, error) {
-	res := []Result{}
-	res = append(res, Result{
+func (t Kafka) Handler(in string) ([]global.Result, error) {
+	res := []global.Result{}
+	res = append(res, global.Result{
 		Service: "Kafka",
 		Output:  in,
 		Status:  "running",

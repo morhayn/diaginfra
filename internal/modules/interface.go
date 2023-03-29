@@ -1,5 +1,7 @@
 package modules
 
+import "github.com/morhayn/diaginfra/internal/global"
+
 var (
 	MapService = map[string]Module{
 		"Tomcat":     Tomcat{},
@@ -17,22 +19,15 @@ var (
 )
 
 type (
-	Handlers = func(string) ([]Result, error)
+	Handlers = func(string) ([]global.Result, error)
 )
 type Module interface {
 	RunString(arg ...string) (string, error)
 	Logs(count int, arg ...string) (string, error)
-	Handler(in string) ([]Result, error)
+	Handler(in string) ([]global.Result, error)
 }
 type Results struct {
-	Res []Result
-}
-type Result struct {
-	Service string `json:"service"`
-	Output  string `json:"status"`
-	Status  string `json:"result"`
-	Alarm   bool   `json:"alarm"`
-	Tooltip string `json:"tooltip"`
+	Res []global.Result
 }
 
 type Dock struct {
@@ -72,8 +67,8 @@ func (r *Results) AddResults(o, name string, prgName string, fn Handlers) {
 		r.Res = append(r.Res, out...)
 	}
 }
-func resultFail(name string) Result {
-	return Result{
+func resultFail(name string) global.Result {
+	return global.Result{
 		Service: name,
 		Output:  name,
 		Status:  "failed",

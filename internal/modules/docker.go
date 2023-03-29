@@ -5,6 +5,8 @@ import (
 	"fmt"
 	"sort"
 	"strings"
+
+	"github.com/morhayn/diaginfra/internal/global"
 )
 
 type Docker struct{}
@@ -21,9 +23,9 @@ func (t Docker) Logs(count int, arg ...string) (string, error) {
 	}
 	return "", fmt.Errorf("not path to log Docker %s", arg)
 }
-func (t Docker) Handler(in string) ([]Result, error) {
+func (t Docker) Handler(in string) ([]global.Result, error) {
 	var docker = Dock{}
-	var res = []Result{}
+	var res = []global.Result{}
 	lines := strings.Split(in, "\n")
 	for _, obj := range lines {
 		if strings.TrimSpace(obj) != "" {
@@ -37,7 +39,7 @@ func (t Docker) Handler(in string) ([]Result, error) {
 				alarm = true
 				status = "failed"
 			}
-			res = append(res, Result{
+			res = append(res, global.Result{
 				Service: "Docker",
 				Output:  docker.Name,
 				Status:  status,

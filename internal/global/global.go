@@ -6,7 +6,6 @@ import (
 	"log"
 
 	"github.com/morhayn/diaginfra/internal/churl"
-	"github.com/morhayn/diaginfra/internal/modules"
 	"gopkg.in/yaml.v2"
 )
 
@@ -32,11 +31,11 @@ type Hosts struct {
 	Stend    []Host      `josn:"stand"`
 }
 type Host struct {
-	Name     string           `json:"name"`
-	Ip       string           `json:"ip"`
-	ListPort []Port           `json:"list_port"`
-	ListSsh  []Out            `json:"list_ssh"`
-	Status   []modules.Result `json:"status"`
+	Name     string   `json:"name"`
+	Ip       string   `json:"ip"`
+	ListPort []Port   `json:"list_port"`
+	ListSsh  []Out    `json:"list_ssh"`
+	Status   []Result `json:"status"`
 }
 type Out struct {
 	Name    string `json:"name"`
@@ -46,6 +45,13 @@ type Out struct {
 type Port struct {
 	Port   string `json:"port"`
 	Status string `json:"status"`
+}
+type Result struct {
+	Service string `json:"service"`
+	Output  string `json:"status"`
+	Status  string `json:"result"`
+	Alarm   bool   `json:"alarm"`
+	Tooltip string `json:"tooltip"`
 }
 
 // ReadConfig Read Config file and unmarshall data in structure

@@ -6,7 +6,7 @@ import (
 )
 
 // HandkeResult -
-func HandleResult(list []global.Out) []modules.Result {
+func HandleResult(list []global.Out) []global.Result {
 	var result modules.Results
 	for _, res := range list {
 		if mod, ok := modules.MapService[res.Name]; ok {

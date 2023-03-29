@@ -4,6 +4,8 @@ import (
 	"fmt"
 	"sort"
 	"strings"
+
+	"github.com/morhayn/diaginfra/internal/global"
 )
 
 type Tomcat struct{}
@@ -23,8 +25,8 @@ func (t Tomcat) Logs(count int, arg ...string) (string, error) {
 	}
 	return "", fmt.Errorf("arg length less 2")
 }
-func (t Tomcat) Handler(in string) ([]Result, error) {
-	res := []Result{}
+func (t Tomcat) Handler(in string) ([]global.Result, error) {
+	res := []global.Result{}
 	if strings.HasPrefix(strings.ToLower(in), "ok") {
 		lines := strings.Split(in, "\n")
 		//First string in array "OK - Listed applications for virtual host localhost" its only status tomcat
@@ -32,7 +34,7 @@ func (t Tomcat) Handler(in string) ([]Result, error) {
 			arr_out := strings.Split(line, ":")
 			if len(arr_out) > 1 {
 				name_war := strings.TrimPrefix(strings.TrimSpace(arr_out[0]), "/")
-				res = append(res, Result{
+				res = append(res, global.Result{
 					Service: "Tomcat",
 					Output:  name_war,
 					Status:  arr_out[1],

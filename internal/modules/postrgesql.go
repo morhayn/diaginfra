@@ -3,6 +3,8 @@ package modules
 import (
 	"fmt"
 	"strings"
+
+	"github.com/morhayn/diaginfra/internal/global"
 )
 
 type Postgresql struct{}
@@ -20,10 +22,10 @@ func (t Postgresql) Logs(count int, arg ...string) (string, error) {
 	return "", fmt.Errorf("not path to log Postgresql %s", arg)
 }
 
-func (t Postgresql) Handler(in string) ([]Result, error) {
-	var res = []Result{}
+func (t Postgresql) Handler(in string) ([]global.Result, error) {
+	var res = []global.Result{}
 	if strings.HasPrefix(in, "online") {
-		res = append(res, Result{
+		res = append(res, global.Result{
 			Service: "Postgresql",
 			Output:  "POSTGRESQL: OK",
 			Status:  "running",

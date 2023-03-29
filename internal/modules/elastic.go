@@ -3,6 +3,8 @@ package modules
 import (
 	"encoding/json"
 	"fmt"
+
+	"github.com/morhayn/diaginfra/internal/global"
 )
 
 type Elastic struct{}
@@ -20,8 +22,8 @@ func (t Elastic) Logs(count int, arg ...string) (string, error) {
 	return "", fmt.Errorf("not path to log Elasticsearch %s", arg)
 }
 
-func (t Elastic) Handler(in string) ([]Result, error) {
-	var res = []Result{}
+func (t Elastic) Handler(in string) ([]global.Result, error) {
+	var res = []global.Result{}
 	var elastic = El{}
 	err := json.Unmarshal([]byte(in), &elastic)
 	if err != nil {
@@ -29,7 +31,7 @@ func (t Elastic) Handler(in string) ([]Result, error) {
 	}
 	result := fmt.Sprintf("ELASTIC: %s NODES: %v  STATUS: %s  Waiting in QUEUE: %v",
 		elastic.Cluster_name, elastic.Number_of_nodes, elastic.Status, elastic.Task_max_waiting_in_queue_millis)
-	res = append(res, Result{
+	res = append(res, global.Result{
 		Service: "Elastic",
 		Output:  result,
 		Status:  "running",

@@ -3,6 +3,8 @@ package modules
 import (
 	"fmt"
 	"strings"
+
+	"github.com/morhayn/diaginfra/internal/global"
 )
 
 type Cassandra struct{}
@@ -20,11 +22,11 @@ func (t Cassandra) Logs(count int, arg ...string) (string, error) {
 	}
 	return "", fmt.Errorf("not path to log Cassandra %s", arg)
 }
-func (t Cassandra) Handler(in string) ([]Result, error) {
-	var res = []Result{}
+func (t Cassandra) Handler(in string) ([]global.Result, error) {
+	var res = []global.Result{}
 	spl_res := strings.Split(in, "\n")
 	if len(spl_res) > 4 {
-		res = append(res, Result{
+		res = append(res, global.Result{
 			Service: "Cassandra",
 			Output:  spl_res[5],
 			Status:  "running",
@@ -32,7 +34,7 @@ func (t Cassandra) Handler(in string) ([]Result, error) {
 			Tooltip: "",
 		})
 	} else {
-		return []Result{}, fmt.Errorf("Cassandre parse failed")
+		return []global.Result{}, fmt.Errorf("Cassandre parse failed")
 	}
 	return res, nil
 }

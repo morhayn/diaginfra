@@ -3,6 +3,8 @@ package modules
 import (
 	"fmt"
 	"strings"
+
+	"github.com/morhayn/diaginfra/internal/global"
 )
 
 type Jar struct {
@@ -22,13 +24,13 @@ func (t Jar) Logs(count int, arg ...string) (string, error) {
 	return "", fmt.Errorf("not path to log Jar %s", arg)
 }
 
-func (t Jar) Handler(in string) ([]Result, error) {
-	res := []Result{}
+func (t Jar) Handler(in string) ([]global.Result, error) {
+	res := []global.Result{}
 	st := "failed"
 	if strings.TrimSpace(in) == "active" {
 		st = "running"
 	}
-	res = append(res, Result{
+	res = append(res, global.Result{
 		Service: "Jar",
 		Output:  t.name,
 		Status:  st,
