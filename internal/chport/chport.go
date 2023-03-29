@@ -48,6 +48,14 @@ func (p Port) Check(ip, port string, res chan global.Port) {
 	res <- result
 }
 
+// Check ssh port if ssh port failed not nid run ssh command to server
+func CheckSshPort(ip, sshPort string, port Cheker) bool {
+	if check := CheckPort(ip, []string{sshPort}, port); check[0].Status == "failed" {
+		return false
+	}
+	return true
+}
+
 // CheckPort  - run goroutine to check all ports on server
 // ip - address server, ports - array number check ports
 // p - interface

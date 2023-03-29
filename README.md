@@ -13,6 +13,8 @@
   - handl parse result shell command 
   - sshcmd run shell command in ssh
   - webapi gin web server
+  - modules testing programs module for configure
+  - global global struct 
 - public react directory
 - src react directory
 

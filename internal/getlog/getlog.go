@@ -6,7 +6,9 @@ import (
 	"regexp"
 	"strconv"
 	"strings"
+	"sync"
 
+	"github.com/morhayn/diaginfra/internal/chport"
 	"github.com/morhayn/diaginfra/internal/global"
 	"github.com/morhayn/diaginfra/internal/modules"
 	"github.com/morhayn/diaginfra/internal/sshcmd"
@@ -17,6 +19,37 @@ type GetLog struct {
 	Service string `json:"service"`
 	Module  string `json:"module"`
 	Errors  int    `json:"errors"`
+}
+
+func GetErr(Status global.Hosts, loadData global.YumInit, port chport.Cheker, conf sshcmd.Execer) []GetLog {
+	var wg_l sync.WaitGroup
+	var ch = make(chan GetLog)
+	res := []GetLog{}
+	go func() {
+		for _, host := range Status.Stend {
+			if chport.CheckSshPort(host.Ip, conf.GetSshPort(), port) {
+				for _, st := range host.Status {
+					wg_l.Add(1)
+					go func(host global.Host, st global.Result) {
+						defer wg_l.Done()
+						get := GetLog{
+							Host:    host.Ip,
+							Service: st.Service,
+							Module:  st.Output,
+						}
+						out := get.GetErrors(loadData.Logs, loadData.CountLog, conf)
+						ch <- out
+					}(host, st)
+				}
+			}
+		}
+		wg_l.Wait()
+		close(ch)
+	}()
+	for o := range ch {
+		res = append(res, o)
+	}
+	return res
 }
 
 // GetErrors - get count ERROR in logs java programs

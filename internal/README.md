@@ -5,4 +5,6 @@
   - handl parse result shell command 
   - sshcmd run shell command in ssh
   - webapi gin web server
+  - modules test programs module for configure
+  - global global struct
 ```
