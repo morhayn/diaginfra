@@ -7,6 +7,7 @@ import (
 	"strconv"
 	"strings"
 
+	"github.com/morhayn/diaginfra/internal/global"
 	"github.com/morhayn/diaginfra/internal/modules"
 	"github.com/morhayn/diaginfra/internal/sshcmd"
 )
@@ -65,7 +66,7 @@ func (g GetLog) GetLogs(logs map[string]string, count int, conf sshcmd.Execer) s
 func (g GetLog) runCmd(cmd string, conf sshcmd.Execer) string {
 	c := sshcmd.CmdExec{
 		Name: "logs",
-		Chan: make(chan sshcmd.Out),
+		Chan: make(chan global.Out),
 	}
 	c.Cmd = cmd
 	go conf.Execute(g.Host, c)

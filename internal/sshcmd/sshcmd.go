@@ -13,6 +13,7 @@ import (
 	"sync"
 	"time"
 
+	"github.com/morhayn/diaginfra/internal/global"
 	"github.com/morhayn/diaginfra/internal/modules"
 	"golang.org/x/crypto/ssh"
 )
@@ -43,13 +44,8 @@ type Comands struct {
 type CmdExec struct {
 	Name    string
 	PrgName string
-	Chan    chan Out
+	Chan    chan global.Out
 	Cmd     string
-}
-type Out struct {
-	Name    string `json:"name"`
-	Result  string `json:"result"`
-	PrgName string `json:"prgname"`
 }
 
 // Init_ssh Configure ssh connection to servers
@@ -76,21 +72,21 @@ func (s SshConfig) GetSshPort() string {
 }
 
 // NewOut  Create struscture with result shell command
-func NewOut(name, prgName, res string) Out {
-	return Out{Name: name, PrgName: prgName, Result: res}
+func NewOut(name, prgName, res string) global.Out {
+	return global.Out{Name: name, PrgName: prgName, Result: res}
 }
 
 // Create structure with failed shell command
-func newOutFail(name, prgName string) Out {
-	return Out{Name: name, PrgName: prgName, Result: "failed"}
+func newOutFail(name, prgName string) global.Out {
+	return global.Out{Name: name, PrgName: prgName, Result: "failed"}
 }
 
 // Run Runing gourutine with executing shell command check service
 // Grouping result executing command
-func Run(ip string, list []string, conf Execer) ([]Out, []Out, error) {
+func Run(ip string, list []string, conf Execer) ([]global.Out, []global.Out, error) {
 	var wg sync.WaitGroup
-	list_srv := []Out{}
-	list_prg := []Out{}
+	list_srv := []global.Out{}
+	list_prg := []global.Out{}
 	done := make(chan string)
 	cmd := Comands{}
 	srv, prg := cmd.buildCmd(list)
@@ -126,9 +122,9 @@ func Run(ip string, list []string, conf Execer) ([]Out, []Out, error) {
 // Build structure for check service and programm
 // chan srv for service (systemd check)
 // chan prg for program running predetermined command
-func (c *Comands) buildCmd(list []string) (_, _ chan Out) {
-	srv := make(chan Out)
-	prg := make(chan Out)
+func (c *Comands) buildCmd(list []string) (_, _ chan global.Out) {
+	srv := make(chan global.Out)
+	prg := make(chan global.Out)
 	for _, l := range list {
 		if l == "Non" {
 			return srv, prg
@@ -157,7 +153,7 @@ func (c *Comands) buildCmd(list []string) (_, _ chan Out) {
 }
 
 // Swith command for test service
-func (s *CmdExec) swCmd(srv, prg chan Out) {
+func (s *CmdExec) swCmd(srv, prg chan global.Out) {
 	var err error
 	s.Chan = prg
 	s.Cmd = ""

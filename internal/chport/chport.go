@@ -6,19 +6,21 @@ import (
 	"strconv"
 	"sync"
 	"time"
+
+	"github.com/morhayn/diaginfra/internal/global"
 )
 
 // Interface for testing
 type Cheker interface {
-	Check(string, string, chan Port)
+	Check(string, string, chan global.Port)
 }
 type Port struct {
-	Port   string `json:"port"`
-	Status string `json:"status"`
+	// Port   string `json:"port"`
+	// Status string `json:"status"`
 }
 
 // After gourutine work ports nids sort.
-func sortPorts(list_port []Port) {
+func sortPorts(list_port []global.Port) {
 	sort.Slice(list_port, func(i, j int) bool {
 		port_i, _ := strconv.Atoi(list_port[i].Port)
 		port_j, _ := strconv.Atoi(list_port[j].Port)
@@ -30,25 +32,29 @@ func sortPorts(list_port []Port) {
 // ip - address server '10.0.0.1'
 // port - '9200'
 // res - channel to CheckPort
-func (p Port) Check(ip, port string, res chan Port) {
-	p.Port = port
-	p.Status = "failed"
+func (p Port) Check(ip, port string, res chan global.Port) {
+	result := global.Port{
+		Port:   port,
+		Status: "failed",
+	}
+	// p.Port = port
+	// p.Status = "failed"
 	address := net.JoinHostPort(ip, port)
 	conn, err := net.DialTimeout("tcp", address, 1*time.Second)
 	if err == nil && conn != nil {
-		p.Status = "success"
+		result.Status = "success"
 		_ = conn.Close()
 	}
-	res <- p
+	res <- result
 }
 
 // CheckPort  - run goroutine to check all ports on server
 // ip - address server, ports - array number check ports
 // p - interface
-func CheckPort(ip string, ports []string, p Cheker) []Port {
+func CheckPort(ip string, ports []string, p Cheker) []global.Port {
 	var wg_p sync.WaitGroup
-	res := make(chan Port)
-	result := []Port{}
+	res := make(chan global.Port)
+	result := []global.Port{}
 	go func() {
 		for _, port := range ports {
 			wg_p.Add(1)

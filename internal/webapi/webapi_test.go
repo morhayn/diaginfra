@@ -3,8 +3,8 @@ package webapi
 import (
 	"testing"
 
-	"github.com/morhayn/diaginfra/internal/chport"
 	"github.com/morhayn/diaginfra/internal/churl"
+	"github.com/morhayn/diaginfra/internal/global"
 	"github.com/morhayn/diaginfra/internal/modules"
 	"github.com/morhayn/diaginfra/internal/sshcmd"
 	"github.com/stretchr/testify/assert"
@@ -18,11 +18,11 @@ func (m mockUrl) Http(url string, res chan churl.Url) {
 
 type mockPort struct{}
 
-func (m mockPort) Check(ip, port string, res chan chport.Port) {
+func (m mockPort) Check(ip, port string, res chan global.Port) {
 	if port == "22" {
-		res <- chport.Port{Port: port, Status: "success"}
+		res <- global.Port{Port: port, Status: "success"}
 	} else {
-		res <- chport.Port{Port: port, Status: "failed"}
+		res <- global.Port{Port: port, Status: "failed"}
 	}
 }
 
@@ -66,23 +66,23 @@ func TestCheckHost(t *testing.T) {
 	var conf mockExec
 	t.Run("simple", func(t *testing.T) {
 		// mock := mockExec{}
-		h := Init{
+		h := global.Init{
 			Name:        "test",
 			Ip:          "127.0.0.1",
 			ListPorts:   []string{"3000", "22"},
 			ListService: []string{"tomcat", "sshd"},
 		}
-		ch := make(chan Host)
+		ch := make(chan global.Host)
 		go checkHost(h, ch, port, conf)
 		res := <-ch
-		assert.Equal(t, res, Host{
+		assert.Equal(t, res, global.Host{
 			Name: "test",
 			Ip:   "127.0.0.1",
-			ListPort: []chport.Port{
+			ListPort: []global.Port{
 				{Port: "22", Status: "success"},
 				{Port: "3000", Status: "failed"},
 			},
-			ListSsh: []sshcmd.Out{
+			ListSsh: []global.Out{
 				{Name: "DiskFree", PrgName: "DiskFree", Result: "no-active"},
 				{Name: "LoadAvg", PrgName: "LoadAvg", Result: "no-active"},
 				{Name: "sshd", PrgName: "sshd", Result: "active"},

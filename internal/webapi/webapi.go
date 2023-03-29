@@ -2,8 +2,6 @@ package webapi
 
 import (
 	"fmt"
-	"io/ioutil"
-	"log"
 	"net/http"
 	"os"
 	"os/exec"
@@ -13,60 +11,46 @@ import (
 	"github.com/morhayn/diaginfra/internal/chport"
 	"github.com/morhayn/diaginfra/internal/churl"
 	"github.com/morhayn/diaginfra/internal/getlog"
+	"github.com/morhayn/diaginfra/internal/global"
 	"github.com/morhayn/diaginfra/internal/handl"
 	"github.com/morhayn/diaginfra/internal/modules"
 	"github.com/morhayn/diaginfra/internal/sshcmd"
 
 	"github.com/gin-contrib/static"
 	"github.com/gin-gonic/gin"
-	"gopkg.in/yaml.v2"
 )
 
 var (
 	RunOps string
 	wg     sync.WaitGroup
 	// Username string
-	Status Hosts
+	Status global.Hosts
 )
 
 type Terminal struct {
 	Ip string `json:"ip"`
 }
-type Hosts struct {
-	ListUrls []churl.Url `json:"list_url"`
-	Stend    []Host      `josn:"stand"`
-}
-type Host struct {
-	Name     string           `json:"name"`
-	Ip       string           `json:"ip"`
-	ListPort []chport.Port    `json:"list_port"`
-	ListSsh  []sshcmd.Out     `json:"list_ssh"`
-	Status   []modules.Result `json:"status"`
-}
+
+// type Hosts struct {
+// ListUrls []churl.Url `json:"list_url"`
+// Stend    []Host      `josn:"stand"`
+// }
+// type Host struct {
+// Name     string           `json:"name"`
+// Ip       string           `json:"ip"`
+// ListPort []chport.Port    `json:"list_port"`
+// ListSsh  []sshcmd.Out     `json:"list_ssh"`
+// Status   []modules.Result `json:"status"`
+// }
 
 // Create new structure for loading config file
-func newHost(name, ip string) Host {
-	return Host{
+func newHost(name, ip string) global.Host {
+	return global.Host{
 		Name:    name,
 		Ip:      ip,
-		ListSsh: []sshcmd.Out{},
+		ListSsh: []global.Out{},
 		Status:  []modules.Result{},
 	}
-}
-
-// ReadConfig Read Config file and unmarshall data in structure
-func (y YumInit) ReadConfig(file string) YumInit {
-	f, err := ioutil.ReadFile(file)
-	if err != nil {
-		fmt.Println("Error open file")
-		log.Fatal(err)
-	}
-	err = yaml.Unmarshal(f, &y)
-	if err != nil {
-		fmt.Println("Error unmarshal")
-		log.Fatal(err)
-	}
-	return y
 }
 
 // Check ssh port if ssh port failed not nid run ssh command to server
@@ -78,7 +62,7 @@ func checkSshPort(ip, sshPort string, port chport.Cheker) bool {
 }
 
 // Run test command to one server
-func checkHost(host Init, ch chan Host, port chport.Cheker, conf sshcmd.Execer) {
+func checkHost(host global.Init, ch chan global.Host, port chport.Cheker, conf sshcmd.Execer) {
 	h := newHost(host.Name, host.Ip)
 	h.ListPort = chport.CheckPort(host.Ip, host.ListPorts, port)
 	if checkSshPort(host.Ip, conf.GetSshPort(), port) {
@@ -94,13 +78,13 @@ func checkHost(host Init, ch chan Host, port chport.Cheker, conf sshcmd.Execer) 
 }
 
 // Run gorutine for all servers in config file and grouping result
-func serverHandler(loadData YumInit, port chport.Cheker, url churl.Churler, conf sshcmd.Execer) Hosts {
-	result := Hosts{}
-	ch := make(chan Host)
+func serverHandler(loadData global.YumInit, port chport.Cheker, url churl.Churler, conf sshcmd.Execer) global.Hosts {
+	result := global.Hosts{}
+	ch := make(chan global.Host)
 	go func() {
 		for _, host := range loadData.Hosts {
 			wg.Add(1)
-			go func(host Init) {
+			go func(host global.Init) {
 				defer wg.Done()
 				checkHost(host, ch, port, conf)
 			}(host)
@@ -135,7 +119,7 @@ func OpenTerminal(t Terminal, username string) {
 
 // RunGin Main package run this function
 // Run web server.
-func RunGin(port chport.Cheker, url churl.Churler, conf sshcmd.Execer, loadData YumInit) {
+func RunGin(port chport.Cheker, url churl.Churler, conf sshcmd.Execer, loadData global.YumInit) {
 	router := gin.Default()
 	router.Use(static.Serve("/", static.LocalFile("./build", true)))
 	api := router.Group("/api")
@@ -172,7 +156,7 @@ func RunGin(port chport.Cheker, url churl.Churler, conf sshcmd.Execer, loadData 
 				if checkSshPort(host.Ip, conf.GetSshPort(), port) {
 					for _, st := range host.Status {
 						wg_l.Add(1)
-						go func(host Host, st modules.Result) {
+						go func(host global.Host, st modules.Result) {
 							defer wg_l.Done()
 							get := getlog.GetLog{
 								Host:    host.Ip,

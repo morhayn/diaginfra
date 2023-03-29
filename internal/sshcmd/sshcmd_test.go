@@ -3,6 +3,7 @@ package sshcmd
 import (
 	"testing"
 
+	"github.com/morhayn/diaginfra/internal/global"
 	"github.com/stretchr/testify/assert"
 )
 
@@ -14,8 +15,8 @@ func (m mockExec) Execute(ip string, c CmdExec) {
 }
 
 func TestSwSmd(t *testing.T) {
-	srv := make(chan Out)
-	prg := make(chan Out)
+	srv := make(chan global.Out)
+	prg := make(chan global.Out)
 	t.Run("service", func(t *testing.T) {
 		ssh := CmdExec{
 			Name: "tomcat1",

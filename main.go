@@ -5,6 +5,7 @@ import (
 
 	"github.com/morhayn/diaginfra/internal/chport"
 	"github.com/morhayn/diaginfra/internal/churl"
+	"github.com/morhayn/diaginfra/internal/global"
 	"github.com/morhayn/diaginfra/internal/sshcmd"
 	"github.com/morhayn/diaginfra/internal/webapi"
 )
@@ -20,7 +21,7 @@ func main() {
 		conf sshcmd.SshConfig
 		port chport.Port
 		url  churl.Url
-		sp   webapi.YumInit
+		sp   global.YumInit
 	)
 	loadData := sp.ReadConfig("conf/config.yaml")
 	if loadData.UserName == "" {
