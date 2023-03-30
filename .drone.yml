@@ -1,8 +1,59 @@
 kind: pipeline
+type: docker
 name: default
 
 steps:
-- name: test
+- name: npm build
+  image: node:18.15.0-alpine
+  commands:
+  - npm init
+  - npm run build
+  when:
+    event:
+    - push
+    - pull_request
+
+steps:
+- name: build go
   image: golang:1.19.6
   commands:
   - go test ./... 
+  - CGO_ENABLED=0 go build -o diaginfra main.go
+  when:
+    event:
+    - push
+    - pull_request
+
+steps:
+- name: docker
+  image: plugins/docker
+  settings:
+    dockerfile: Docker_K8s/Dockerfile_ci
+    username: 
+    password: 
+    repo: localshot/repository
+    tags:
+    - latest
+    - main
+    ssh-agent-key:
+      from_secret: private_key
+  when:
+    event:
+    - push
+    - pull_request
+
+steps:
+- name: artifactory
+  image: athieriot/drone-artifactory
+  url:
+  username:
+  password:
+  pom: pom.xml
+  files:
+  - target/build
+  - target/conf
+  - target/diaginfra
+  when:
+    event:
+    - push
+    - pull_request
