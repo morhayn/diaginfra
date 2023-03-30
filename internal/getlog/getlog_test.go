@@ -18,6 +18,16 @@ func (m mockExec) Execute(ip string, c sshcmd.CmdExec) {
 func (m mockExec) GetSshPort() string {
 	return "22"
 }
+
+type mockErr struct{}
+
+func (e mockErr) Execute(ip string, c sshcmd.CmdExec) {
+	c.Chan <- sshcmd.NewOut("test", "test", "10")
+}
+func (e mockErr) GetSshPort() string {
+	return "22"
+}
+
 func TestGetLogs(t *testing.T) {
 	mock := mockExec{}
 	g := GetLog{
@@ -100,6 +110,52 @@ func TestGetErr(t *testing.T) {
 		case <-ch:
 		case <-time.After(3 * time.Second):
 			t.Fatal("TIMEOUT 3 second")
+		}
+	})
+}
+func TestErrBuildCmd(t *testing.T) {
+	getLog := GetLog{
+		Host:    "127.0.0.1",
+		Service: "Tomcat",
+		Module:  "test",
+		Errors:  0,
+	}
+	t.Run("test Tomcat module", func(t *testing.T) {
+		getLog.Service = "Tomcat"
+		logs := map[string]string{
+			"Tomcat": "/var/log/tomcat/",
+		}
+		res := getLog.errBuildCmd(logs, 300, mockErr{})
+		if res.Errors != 10 {
+			t.Fatal("Errors from function not 10 ", res)
+		}
+	})
+	t.Run("test Service Cassandra", func(t *testing.T) {
+		getLog.Service = "Cassandra"
+		logs := map[string]string{
+			"Cassandra": "/var/log/cassandra/cassandra.log",
+		}
+		res := getLog.errBuildCmd(logs, 300, mockErr{})
+		if res.Errors != 10 {
+			t.Fatal("Errors from function not 10 ", res)
+		}
+	})
+	t.Run("server return string", func(t *testing.T) {
+		getLog.Service = "Tomcat"
+		logs := map[string]string{
+			"Tomcat": "/var/log/tomcat/",
+		}
+		res := getLog.errBuildCmd(logs, 300, mockExec{})
+		if res.Errors != 999 {
+			t.Fatal("Errors not 999 ", res)
+		}
+	})
+	t.Run("docker logs", func(t *testing.T) {
+		logs := map[string]string{}
+		getLog.Service = "Docker"
+		res := getLog.errBuildCmd(logs, 300, mockErr{})
+		if res.Errors != 10 {
+			t.Fatal("Errors from function not 10 ", res)
 		}
 	})
 }

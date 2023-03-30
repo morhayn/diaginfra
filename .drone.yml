@@ -50,9 +50,9 @@ steps:
   password:
   pom: pom.xml
   files:
-  - target/build
-  - target/conf
-  - target/diaginfra
+  - build
+  - conf
+  - diaginfra
   when:
     event:
     - push
