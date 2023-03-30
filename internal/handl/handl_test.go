@@ -2,7 +2,9 @@ package handl
 
 import (
 	"testing"
+	"time"
 
+	"github.com/morhayn/diaginfra/internal/chport"
 	"github.com/morhayn/diaginfra/internal/churl"
 	"github.com/morhayn/diaginfra/internal/global"
 	"github.com/morhayn/diaginfra/internal/sshcmd"
@@ -88,6 +90,42 @@ func TestCheckHost(t *testing.T) {
 			},
 			Status: []global.Result(nil),
 		})
+	})
+}
+
+func TestCheckHostTimeOut(t *testing.T) {
+	port := chport.Port{}
+	ssh := sshcmd.SshConfig{}
+	ssh.Init_ssh("user", "62222")
+
+	loadData := global.YumInit{
+		UserName: "user",
+		SshPort:  "62222",
+		CountLog: 400,
+		ListUrls: []string{},
+		Logs: map[string]string{
+			"test": "/var/log/test",
+		},
+		Hosts: []global.Init{
+			{
+				Name:        "test-server",
+				Ip:          "127.0.0.1",
+				ListPorts:   []string{"22"},
+				ListService: []string{"test", "service"},
+				Wars:        []string{},
+			},
+		},
+	}
+	t.Run("Ssh Port Check", func(t *testing.T) {
+		ch := make(chan global.Host)
+		go func() {
+			checkHost(loadData.Hosts[0], ch, port, ssh)
+		}()
+		select {
+		case <-ch:
+		case <-time.After(3 * time.Second):
+			t.Fatal("TIMEOUT 3 second")
+		}
 	})
 }
 

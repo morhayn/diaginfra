@@ -37,7 +37,7 @@ func GetErr(Status global.Hosts, loadData global.YumInit, port chport.Cheker, co
 							Service: st.Service,
 							Module:  st.Output,
 						}
-						out := get.GetErrors(loadData.Logs, loadData.CountLog, conf)
+						out := get.errBuildCmd(loadData.Logs, loadData.CountLog, conf)
 						ch <- out
 					}(host, st)
 				}
@@ -53,7 +53,7 @@ func GetErr(Status global.Hosts, loadData global.YumInit, port chport.Cheker, co
 }
 
 // GetErrors - get count ERROR in logs java programs
-func (g GetLog) GetErrors(logs map[string]string, count int, conf sshcmd.Execer) GetLog {
+func (g GetLog) errBuildCmd(logs map[string]string, count int, conf sshcmd.Execer) GetLog {
 	path, ok := logs[g.Service]
 	if !ok {
 		return g
