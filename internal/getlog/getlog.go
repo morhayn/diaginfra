@@ -54,26 +54,32 @@ func GetErr(Status global.Hosts, loadData global.YumInit, port chport.Cheker, co
 
 // GetErrors - get count ERROR in logs java programs
 func (g GetLog) errBuildCmd(logs map[string]string, count int, conf sshcmd.Execer) GetLog {
-	path, ok := logs[g.Service]
-	if !ok && g.Service != "Docker" {
-		return g
-	}
+	// path, ok := logs[g.Service]
+	// if !ok && g.Service != "Docker" {
+	// return g
+	// }
 	cmd := ""
 	x := g.Module == "host-manager"
 	if (x) || (g.Module == "manager") {
 		g.Errors = 0
 		return g
 	}
-	awk := `awk 'BEGIN { err = 0 } /ERROR/ { err++ } END { print err }'`
-	if g.Service == "Docker" {
-		cmd = fmt.Sprintf(`sudo docker logs --tail %d %s | %s`, count, g.Module, awk)
-	} else if g.Service == "Tomcat" || g.Service == "Jar" {
-		fileTest := fmt.Sprintf("sudo test -f %s%s.log && ", path, g.Module)
-		cmd = fmt.Sprintf(`%s sudo tail -n %d %s%s.log | %s`, fileTest, count, path, g.Module, awk)
-	} else {
-		fileTest := fmt.Sprintf("sudo test -f %s && ", path)
-		cmd = fmt.Sprintf(`%s sudo tail -n %d %s | %s`, fileTest, count, path, awk)
+	log, err := g.cmdReadLog(logs, count)
+	if err != nil {
+		g.Errors = 0
+		return g
 	}
+	awk := `awk 'BEGIN { err = 0 } /ERROR/ { err++ } END { print err }'`
+	cmd = fmt.Sprintf(`%s | %s`, log, awk)
+	// if g.Service == "Docker" {
+	// cmd = fmt.Sprintf(`sudo docker logs --tail %d %s | %s`, count, g.Module, awk)
+	// } else if g.Service == "Tomcat" || g.Service == "Jar" {
+	// fileTest := fmt.Sprintf("sudo test -f %s%s.log && ", path, g.Module)
+	// cmd = fmt.Sprintf(`%s sudo tail -n %d %s%s.log | %s`, fileTest, count, path, g.Module, awk)
+	// } else {
+	// fileTest := fmt.Sprintf("sudo test -f %s && ", path)
+	// cmd = fmt.Sprintf(`%s sudo tail -n %d %s | %s`, fileTest, count, path, awk)
+	// }
 	out := strings.TrimSpace(g.runCmd(cmd, conf))
 	if out != "" {
 		if e, err := strconv.Atoi(out); err == nil {

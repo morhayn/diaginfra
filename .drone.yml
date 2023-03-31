@@ -29,8 +29,10 @@ steps:
   image: plugins/docker
   settings:
     dockerfile: Docker_K8s/Dockerfile_ci
-    username: 
+    username:
+      from_secret: registry_user
     password: 
+      from_secret: registry_pass
     repo: localshot/repository
     tags:
     - latest
@@ -47,7 +49,9 @@ steps:
   image: athieriot/drone-artifactory
   url:
   username:
+    from_secret: artifact_user
   password:
+    from_secret: artifact_pass
   pom: pom.xml
   files:
   - build
