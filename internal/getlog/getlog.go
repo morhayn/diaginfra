@@ -3,7 +3,6 @@ package getlog
 import (
 	"errors"
 	"fmt"
-	"regexp"
 	"strconv"
 	"strings"
 	"sync"
@@ -114,19 +113,19 @@ func (g GetLog) runCmd(cmd string, conf sshcmd.Execer) string {
 }
 
 // Parse log to map[LEVEL]COUNT
-func parse(log string) map[string]int {
-	regPatern := `.*(?P<level>(DEBUG|ERROR|WARN|INFO)+) .*`
-	re := regexp.MustCompile(regPatern)
-	parsedMap := make(map[string]int)
-	lines := strings.Split(log, "\n")
-	for _, l := range lines {
-		match := re.FindStringSubmatch(l)
-		if match != nil {
-			parsedMap[match[1]] += 1
-		}
-	}
-	return parsedMap
-}
+// func parse(log string) map[string]int {
+// regPatern := `.*(?P<level>(DEBUG|ERROR|WARN|INFO)+) .*`
+// re := regexp.MustCompile(regPatern)
+// parsedMap := make(map[string]int)
+// lines := strings.Split(log, "\n")
+// for _, l := range lines {
+// match := re.FindStringSubmatch(l)
+// if match != nil {
+// parsedMap[match[1]] += 1
+// }
+// }
+// return parsedMap
+// }
 
 // Get command for service log
 func (g GetLog) cmdReadLog(logs map[string]string, tail int) (string, error) {
