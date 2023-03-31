@@ -96,7 +96,6 @@ func TestCheckHost(t *testing.T) {
 func TestCheckHostTimeOut(t *testing.T) {
 	port := chport.Port{}
 	ssh := sshcmd.SshConfig{}
-	ssh.Init_ssh("user", "62222")
 
 	loadData := global.YumInit{
 		UserName: "user",

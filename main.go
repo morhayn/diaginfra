@@ -1,6 +1,7 @@
 package main
 
 import (
+	"fmt"
 	"os"
 	"path/filepath"
 
@@ -30,7 +31,11 @@ func main() {
 		url  churl.Url
 		sp   global.YumInit
 	)
-	loadData := sp.ReadConfig("conf/config.yaml")
+	loadData, err := sp.ReadConfig("conf/config.yaml")
+	if err != nil {
+		fmt.Printf("error reading config file: %s", err)
+		os.Exit(1)
+	}
 	if loadData.UserName == "" {
 		loadData.UserName = os.Getenv("USER")
 	}

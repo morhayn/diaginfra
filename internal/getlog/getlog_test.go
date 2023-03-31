@@ -70,8 +70,6 @@ func TestGetLogs(t *testing.T) {
 func TestGetErr(t *testing.T) {
 	port := chport.Port{}
 	ssh := sshcmd.SshConfig{}
-	ssh.Init_ssh("user", "62222")
-
 	loadData := global.YumInit{
 		UserName: "user",
 		SshPort:  "62222",

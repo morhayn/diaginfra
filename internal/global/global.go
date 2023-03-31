@@ -3,7 +3,6 @@ package global
 import (
 	"fmt"
 	"io/ioutil"
-	"log"
 
 	"github.com/morhayn/diaginfra/internal/churl"
 	"gopkg.in/yaml.v2"
@@ -55,16 +54,16 @@ type Result struct {
 }
 
 // ReadConfig Read Config file and unmarshall data in structure
-func (y YumInit) ReadConfig(file string) YumInit {
+func (y YumInit) ReadConfig(file string) (YumInit, error) {
 	f, err := ioutil.ReadFile(file)
 	if err != nil {
 		fmt.Println("Error open file")
-		log.Fatal(err)
+		return y, err
 	}
 	err = yaml.Unmarshal(f, &y)
 	if err != nil {
 		fmt.Println("Error unmarshal")
-		log.Fatal(err)
+		return y, err
 	}
-	return y
+	return y, nil
 }
