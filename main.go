@@ -2,6 +2,7 @@ package main
 
 import (
 	"os"
+	"path/filepath"
 
 	"github.com/morhayn/diaginfra/internal/chport"
 	"github.com/morhayn/diaginfra/internal/churl"
@@ -17,6 +18,12 @@ func main() {
 	} else {
 		webapi.RunOps = "local"
 	}
+	path, err := os.Executable()
+	if err != nil {
+		panic(err)
+	}
+	prDir := filepath.Dir(path)
+	os.Chdir(prDir)
 	var (
 		conf sshcmd.SshConfig
 		port chport.Port
