@@ -13,7 +13,7 @@ RUN CGO_ENABLED=0 go build -o ./out/diaginfra -buildvcs=false main.go
 FROM node:18.15.0-alpine AS nodejs
 WORKDIR /tmp/app
 COPY . .
-RUN npm init
+RUN npm install
 RUN npm run build
 
 # Start fresh from a smaller image
