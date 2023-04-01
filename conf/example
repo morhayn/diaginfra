@@ -1,5 +1,6 @@
 user: username
 countlog: 300
+ssh_port: "22"
 list_urls:
   "https://service:8080.home.local"
   "https://login:8080.home.local"
