@@ -176,7 +176,7 @@ function App() {
               })}
             </tr>
           </table >
-          {getdata.Stend.map(host => (host.status) ? <table>
+          {getdata.Stend.map(host => ((host.status) && (host.status.length > 0)) ? <table>
             <tr onMouseEnter={() => onHover(host.ip)} className={(host.ip == getselect) ? 'sele' : ""}>
               {/* <tr onMouseEnter={() => onHover(host.ip)}> */}
               <td onClick={() => sshconnect(host.ip)}>
