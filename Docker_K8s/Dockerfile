@@ -25,7 +25,7 @@ RUN npm run build
 FROM alpine:3.9 
 COPY --from=build_base /tmp/diaginfra/out/diaginfra /app/
 COPY --from=nodejs /tmp/app/build /app/build
-COPY ./conf/config.yaml /app/conf/
+# COPY ./conf/config.yaml /app/conf/
 # This container exposes port 3000 to the outside world
 EXPOSE 3000
 # Run the binary program produced by `go install`

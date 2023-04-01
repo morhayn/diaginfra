@@ -61,6 +61,12 @@ td {
   /* font-style: italic; */
   border-bottom: 2px red solid;
 }
+.tdcuttext{
+  max-width: 100px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
 .tbllogg {
   overflow: 'hidden';
   table-layout: fixed;

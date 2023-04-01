@@ -157,7 +157,7 @@ function App() {
                     return <td>{s.result}</td>
                   }
                   return <>
-                    <td style={{ backgroundColor: color }}>{s.name}</td>
+                    <td className='tdcuttext' style={{ backgroundColor: color }}>{s.name}</td>
                   </>
                 })}
               </tr>
