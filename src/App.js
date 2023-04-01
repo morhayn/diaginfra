@@ -58,18 +58,18 @@ function App() {
   // }])
   useEffect(() => {
     AjaxFetch('/api/get', {}, 'POST').then((data) => {
-      console.log(data)
+      // console.log(data)
       setdata(data)
       AjaxFetch('/api/errorlogs', {}, 'POST').then((logerr) => {
-        console.log(logerr)
+        // console.log(logerr)
         let err = data.Stend.map(host => {
-          console.log(host)
+          // console.log(host)
           let log = logerr.filter(logs => host.ip == logs.host)
-          console.log(log)
+          // console.log(log)
           if (log.length > 0) {
             host.status.map(st => {
               err = log.find(l => l.module == st.status)
-              console.log("Err", err)
+              // console.log("Err", err)
               if (err) {
                 st.errors = err.errors
               }
@@ -78,7 +78,7 @@ function App() {
           }
           return host
         })
-        console.log(err)
+        // console.log(err)
         setdata({list_url: data.list_url, Stend: err })
       })
     })
@@ -102,7 +102,7 @@ function App() {
   }
   const Warlogs = (host, module, service) => {
     AjaxFetch('/api/warlog', { host: host, service: service, module: module }, 'POST').then((data) => {
-      console.log(data)
+      // console.log(data)
       if (!data) return
       setloggs(Parse(data))
       setdialog("visible")
