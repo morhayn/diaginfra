@@ -19,8 +19,12 @@ func (t Tomcat) Logs(count int, arg ...string) (string, error) {
 	if len(arg) > 1 {
 		if arg[1] == "Tomcat" {
 			arg[1] = "catalina.out"
+			fileTest := fmt.Sprintf("sudo test -f %s%s &&", arg[0], arg[1])
+			log = fmt.Sprintf("%s sudo tail -n %d %s%s", fileTest, count, arg[0], arg[1])
+		} else {
+			fileTest := fmt.Sprintf("sudo test -f %s%s.log &&", arg[0], arg[1])
+			log = fmt.Sprintf("%s sudo tail -n %d %s%s.log", fileTest, count, arg[0], arg[1])
 		}
-		log = fmt.Sprintf("sudo tail -n %d %s%s.log", count, arg[0], arg[1])
 		return log, nil
 	}
 	return "", fmt.Errorf("arg length less 2")

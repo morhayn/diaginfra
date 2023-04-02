@@ -1,7 +1,8 @@
 ## diaginfra
 
 ## Program for checking the operation services
-## Create conf/config.yaml file checking services and run main file
+### Create conf/config.yaml file checking services and run main file
+### Ssh key for connection get from ~/.ssh/id_rsa (internal/sshcmd func InitSsh)
 
 ## Directory project
 - build react compiling directory

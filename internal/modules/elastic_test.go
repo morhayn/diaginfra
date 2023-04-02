@@ -21,7 +21,7 @@ func TestElasticLogs(t *testing.T) {
 		if err != nil {
 			t.Fatal(err)
 		}
-		if res != "sudo tail -n 300 /log/elastic.log" {
+		if res != "sudo test -f /log/elastic.log && sudo tail -n 300 /log/elastic.log" {
 			t.Fatal("not right answer ", res)
 		}
 	})

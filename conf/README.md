@@ -30,6 +30,7 @@ hosts:
 ```
 user - user name for conect ssh to servers. Ssh key get from ~/.ssh/
 ssh_port - port for connect to servers
+### Ssh key for connection get from ~/.ssh/id_rsa (internal/sshcmd func InitSsh)
 countlog - count tail log file
 logs - path to logs file
 list_usrls - list urls http and https for test response status code

@@ -54,7 +54,7 @@ func TestTomcatLogs(t *testing.T) {
 		if err != nil {
 			t.Fatal(err)
 		}
-		if log != "sudo tail -n 300 /test/manager.log" {
+		if log != "sudo test -f /test/manager.log && sudo tail -n 300 /test/manager.log" {
 			t.Fatal("Command not right ", log)
 		}
 	})

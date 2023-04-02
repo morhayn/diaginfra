@@ -22,7 +22,7 @@ func TestCassLogs(t *testing.T) {
 		if err != nil {
 			t.Fatal(err)
 		}
-		if res != "sudo tail -n 300 /log/cass.out" {
+		if res != "sudo test -f /log/cass.out && sudo tail -n 300 /log/cass.out" {
 			t.Fatal("not right answer ", res)
 		}
 	})

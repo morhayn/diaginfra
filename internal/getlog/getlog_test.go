@@ -1,6 +1,7 @@
 package getlog
 
 import (
+	"fmt"
 	"testing"
 	"time"
 
@@ -37,15 +38,17 @@ func TestGetLogs(t *testing.T) {
 	count := 300
 	t.Run("test fpko", func(t *testing.T) {
 		g.Service = "Tomcat"
-		logs := map[string]string{"Tomcat": "/d01/tomcat/tomcat1/logs/"}
+		path := "/d01/tomcat/logs/"
+		logs := map[string]string{"Tomcat": path}
 		res := g.GetLogs(logs, count, mock)
-		assert.Equal(t, res, "sudo tail -n 300 /d01/tomcat/tomcat1/logs/wap-test.log")
+		assert.Equal(t, res, fmt.Sprintf("sudo test -f %swap-test.log && sudo tail -n 300 %swap-test.log", path, path))
 	})
 	t.Run("test scuo", func(t *testing.T) {
 		g.Service = "Tomcat"
-		logs := map[string]string{"Tomcat": "/var/log/tomcat8/"}
+		path := "/var/log/tomcat/"
+		logs := map[string]string{"Tomcat": path}
 		res := g.GetLogs(logs, count, mock)
-		assert.Equal(t, res, "sudo tail -n 300 /var/log/tomcat8/wap-test.log")
+		assert.Equal(t, res, fmt.Sprintf("sudo test -f %swap-test.log && sudo tail -n 300 %swap-test.log", path, path))
 	})
 	t.Run("test dockeer log", func(t *testing.T) {
 		g.Service = "Docker"
@@ -56,15 +59,17 @@ func TestGetLogs(t *testing.T) {
 	})
 	t.Run("test cassandra", func(t *testing.T) {
 		g.Service = "Cassandra"
-		logs := map[string]string{"Cassandra": "/var/log/cassandra/system.log"}
+		path := "/var/log/cassandra/system.log"
+		logs := map[string]string{"Cassandra": path}
 		res := g.GetLogs(logs, count, mock)
-		assert.Equal(t, res, "sudo tail -n 300 /var/log/cassandra/system.log")
+		assert.Equal(t, res, fmt.Sprintf("sudo test -f %s && sudo tail -n 300 %s", path, path))
 	})
 	t.Run("test hazelcast", func(t *testing.T) {
 		g.Service = "Hazelcast"
-		logs := map[string]string{"Hazelcast": "/var/log/hazelcast/hazelcast.log"}
+		path := "/var/log/hazelcast/hazelcast.log"
+		logs := map[string]string{"Hazelcast": path}
 		res := g.GetLogs(logs, count, mock)
-		assert.Equal(t, res, "sudo tail -n 300 /var/log/hazelcast/hazelcast.log")
+		assert.Equal(t, res, fmt.Sprintf("sudo test -f %s && sudo tail -n 300 %s", path, path))
 	})
 }
 func TestGetErr(t *testing.T) {

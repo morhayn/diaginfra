@@ -21,7 +21,7 @@ func TestMongoLogs(t *testing.T) {
 		if err != nil {
 			t.Fatal(err)
 		}
-		if res != "sudo tail -n 300 /log/mongo.log" {
+		if res != "sudo test -f /log/mongo.log && sudo tail -n 300 /log/mongo.log" {
 			t.Fatal("result not right ", res)
 		}
 	})

@@ -21,7 +21,7 @@ func TestPostgresLogs(t *testing.T) {
 		if err != nil {
 			t.Fatal(err)
 		}
-		if res != "sudo tail -n 300 /log/postgres.log" {
+		if res != "sudo test -f /log/postgres.log && sudo tail -n 300 /log/postgres.log" {
 			t.Fatal("answer not right ", res)
 		}
 	})

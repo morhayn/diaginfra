@@ -21,7 +21,7 @@ func TestRabbitLogs(t *testing.T) {
 		if err != nil {
 			t.Fatal(err)
 		}
-		if res != "sudo tail -n 300 /log/rabbit.log" {
+		if res != "sudo test -f /log/rabbit.log && sudo tail -n 300 /log/rabbit.log" {
 			t.Fatal("result not right ", res)
 		}
 	})

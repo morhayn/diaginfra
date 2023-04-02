@@ -17,7 +17,8 @@ func (t Ceph) RunString(arg ...string) (string, error) {
 func (t Ceph) Logs(count int, arg ...string) (string, error) {
 	log := ""
 	if len(arg) > 0 {
-		log = fmt.Sprintf("sudo tail -n %d %s", count, arg[0])
+		fileTest := fmt.Sprintf("sudo test -f %s &&", arg[0])
+		log = fmt.Sprintf("%s sudo tail -n %d %s", fileTest, count, arg[0])
 		return log, nil
 	}
 	return "", fmt.Errorf("not path to log Ceph %s", arg)

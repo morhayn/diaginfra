@@ -18,7 +18,8 @@ func (t Jar) RunString(arg ...string) (string, error) {
 func (t Jar) Logs(count int, arg ...string) (string, error) {
 	log := ""
 	if len(arg) > 1 {
-		log = fmt.Sprintf("sudo tail -n %d %s%s.log", count, arg[0], arg[1])
+		fileTest := fmt.Sprintf("sudo test -f %s%s.log &&", arg[0], arg[1])
+		log = fmt.Sprintf("%s sudo tail -n %d %s%s.log", fileTest, count, arg[0], arg[1])
 		return log, nil
 	}
 	return "", fmt.Errorf("not path to log Jar %s", arg)

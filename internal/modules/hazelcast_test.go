@@ -21,7 +21,7 @@ func TestHazelcastLogs(t *testing.T) {
 		if err != nil {
 			t.Fatal(err)
 		}
-		if res != "sudo tail -n 300 /log/hazel.log" {
+		if res != "sudo test -f /log/hazel.log && sudo tail -n 300 /log/hazel.log" {
 			t.Fatal("result not right ", res)
 		}
 	})

@@ -21,7 +21,7 @@ func TestKafkaLogs(t *testing.T) {
 		if err != nil {
 			t.Fatal(err)
 		}
-		if res != "sudo tail -n 300 /log/kafka.log" {
+		if res != "sudo test -f /log/kafka.log && sudo tail -n 300 /log/kafka.log" {
 			t.Fatal("result not right ", res)
 		}
 	})

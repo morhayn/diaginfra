@@ -21,7 +21,7 @@ func TestJarLogs(t *testing.T) {
 		if err != nil {
 			t.Fatal(err)
 		}
-		if res != "sudo tail -n 300 /log/jar/service.log" {
+		if res != "sudo test -f /log/jar/service.log && sudo tail -n 300 /log/jar/service.log" {
 			t.Fatal("result not right ", res)
 		}
 	})

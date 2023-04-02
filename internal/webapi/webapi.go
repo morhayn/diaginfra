@@ -27,18 +27,6 @@ type Terminal struct {
 	Ip string `json:"ip"`
 }
 
-// type Hosts struct {
-// ListUrls []churl.Url `json:"list_url"`
-// Stend    []Host      `josn:"stand"`
-// }
-// type Host struct {
-// Name     string           `json:"name"`
-// Ip       string           `json:"ip"`
-// ListPort []chport.Port    `json:"list_port"`
-// ListSsh  []sshcmd.Out     `json:"list_ssh"`
-// Status   []modules.Result `json:"status"`
-// }
-
 // OpenTerminal Open terminal for administrating servers
 func OpenTerminal(t Terminal, username string) {
 	if RunOps != "server" {

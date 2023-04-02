@@ -49,7 +49,7 @@ type CmdExec struct {
 }
 
 // Init_ssh Configure ssh connection to servers
-func (s *SshConfig) Init_ssh(username, port string) {
+func (s *SshConfig) InitSsh(username, port string) {
 	s.sshPort = port
 	key, err := os.ReadFile(os.Getenv("HOME") + "/.ssh/id_rsa")
 	if err != nil {

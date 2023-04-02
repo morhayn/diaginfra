@@ -42,6 +42,6 @@ func main() {
 	if loadData.SshPort == "" {
 		loadData.SshPort = "22"
 	}
-	conf.Init_ssh(loadData.UserName, loadData.SshPort)
+	conf.InitSsh(loadData.UserName, loadData.SshPort)
 	webapi.RunGin(port, url, conf, loadData)
 }

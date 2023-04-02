@@ -21,7 +21,7 @@ func TestCephLogs(t *testing.T) {
 		if err != nil {
 			t.Fatal(err)
 		}
-		if res != "sudo tail -n 300 /log/ceph.log" {
+		if res != "sudo test -f /log/ceph.log && sudo tail -n 300 /log/ceph.log" {
 			t.Fatal(" answer not right ", res)
 		}
 	})
