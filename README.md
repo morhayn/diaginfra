@@ -21,7 +21,7 @@
 
 ## Build programm
  ```
- npm init
+ npm install
  npm run build
  go mod tidy
  CGO_ENABLED=0 go build -o diaginfra main.go
