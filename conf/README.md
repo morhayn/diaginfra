@@ -56,3 +56,8 @@ list_service -
   "Ceph" - ceph status | awk '/health/ {print $2}'
   "Docker" - docker ps --format '{"name":"{{.Names}}", "status":"{{.Status}}"}'
 ```
+### Count errors in logs file command:
+```
+  sudo test -f LOG_FILE && sudo tail -n COUNT LOG_FILE | \
+  awk 'BEGIN { err = 0 } /ERROR/ { err++ } END { print err }'
+```
