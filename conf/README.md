@@ -28,8 +28,8 @@ hosts:
     wars:
       - "list war files"
 ```
-user - user name for conect ssh to servers. Ssh key get from ~/.ssh/
-ssh_port - port for connect to servers
+user - user name for conect ssh to servers. Ssh key get from ~/.ssh/ IF NOT PRESSENT USE from variable USER
+ssh_port - port for connect to servers. IF NOT PRESSENT USE "22"
 ### Ssh key for connection get from ~/.ssh/id_rsa (internal/sshcmd func InitSsh)
 countlog - count tail log file
 logs - path to logs file
@@ -37,9 +37,11 @@ list_usrls - list urls http and https for test response status code
 list_ports - list ports for checks
 list_service -
   List service to check ssh commands
-  Add new command -
-   pkg/sshcmd.go add command
-   pkg/handl.go add parse result command
+
+###  Add new command -
+  internal/modules/README.md
+
+### Commands:
 ```
   "tomcat" - systemctl is-active tomcat
   "elasticsearch" - sysytemctl is-active elasticasearch
