@@ -50,6 +50,7 @@ func RunGin(port chport.Cheker, url churl.Churler, conf sshcmd.Execer, loadData 
 	api := router.Group("/api")
 	{
 		api.GET("/", func(c *gin.Context) {
+			c.Header("X-Check", "OK")
 			c.JSON(http.StatusOK, gin.H{
 				"message": "pong",
 			})

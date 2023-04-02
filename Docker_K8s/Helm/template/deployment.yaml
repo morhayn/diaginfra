@@ -25,9 +25,14 @@ spec:
         image: {{ .Values.registry }}/{{ .Values.image }}:{{ .Values.tag }}
         ports:
         - containerPort: 3000
+        readinessProbe:
+          tcpSocket:
+            port: 3000
+          initialDelaySeconds: 10
+          periodSeconds: 10
         volumeMounts:
         - name: vol-config
-          mountPath: "/app/conf
+          mountPath: "/app/conf"
           readOnly: true
         resources:
           requests:
