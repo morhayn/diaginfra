@@ -3,6 +3,7 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: {{ .Values.name }}
+  namespace: {{ .Values.namespace}}
   labels:
     app: {{ .Values.name }}
 spec:
@@ -24,9 +25,17 @@ spec:
         image: {{ .Values.registry }}/{{ .Values.image }}:{{ .Values.tag }}
         ports:
         - containerPort: 3000
+        volumeMounts:
+        - name: vol-config
+          mountPath: "/app/conf
+          readOnly: true
         resources:
           requests:
             memory: {{ .Values.resources.requests.memory | quote }}
           limits:
             memory: {{ .Values.resources.limits.memory | quote }}
+      volumes:
+        - name: vol-config
+          configMap:
+            name: diag-config
 

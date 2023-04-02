@@ -1,5 +1,6 @@
 
 name: "diaginfra"
+namespace: "diag"
 registry: "docker.io"
 image: diaginfra
 tag: 0.1.0

@@ -1,0 +1,54 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: diag-config
+  namespace: {{ .Values.namespace}}
+data:
+  config.yaml: |    
+    user: username
+    countlog: 300
+    ssh_port: "22"
+    list_urls:
+      "https://service:8080.home.local"
+      "https://login:8080.home.local"
+    logs:
+      Tomcat: "/var/log/tomcat/"
+      Cassandra: "/var/log/cassandra/system.log"
+      Postgresql: "/var/log/postgresql/postgresql-9.6-main.log"
+      Hazelcast: "/var/log/hazelcast/hazelcast.log"
+    hosts:
+      - name: "app01"
+        ip: "10.0.0.10"
+        list_ports:
+          - "22"
+          - "8080"
+        list_service:
+          - "tomcat8"
+          - "Tomcat:tomcat:passs:8080"
+        wars:
+          - service.war
+          - login.war
+          - loggs.war
+      - name: "app02"
+        ip: "10.0.0.20"
+        list_ports:
+          - "22"
+          - "8081"
+        list_service:
+          - "tomcat8"
+          - "Tomcat:user:pass22:8081"
+        wars:
+          - service.war
+      - name: "db01"
+        ip: "10.0.0.50"
+        list_ports:
+          - "22"
+          - "9200"
+          - "27017"
+          - "5601"
+        list_service:
+          - "elasticsearch"
+          - "mongod"
+          - "rabbitmq-server"
+        wars:
+      
