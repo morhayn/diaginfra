@@ -79,7 +79,7 @@ function App() {
           return host
         })
         // console.log(err)
-        setdata({list_url: data.list_url, Stend: err })
+        setdata({ list_url: data.list_url, Stend: err })
       })
     })
   }, []);
@@ -115,9 +115,9 @@ function App() {
     (getdata.length == 0) ? <div><h1>Loading..</h1></div> : <>
       <div className='modal' style={{ visibility: dialog }} >
         <div ref={ref} className='modal-content'><pre>
-          {loggs.map(log => (log == "ERROR") ? <span style={{backgroundColor: "red"}}>{log}</span> : 
-          (log == "WARN") ? <span style={{backgroundColor: "orange"}}>{log}</span> :<span>{log}</span> )}
-          </pre>
+          {loggs.map(log => (log == "ERROR") ? <span style={{ backgroundColor: "red" }}>{log}</span> :
+            (log == "WARN") ? <span style={{ backgroundColor: "orange" }}>{log}</span> : <span>{log}</span>)}
+        </pre>
           {/* <pre>{loggs}</pre> */}
         </div>
       </div>
@@ -157,7 +157,9 @@ function App() {
                     return <td>{s.result}</td>
                   }
                   return <>
-                    <td className='tdcuttext' style={{ backgroundColor: color }}>{s.name}</td>
+                    <Tooltip text={s.name}>
+                      <td className='tdcuttext' style={{ backgroundColor: color }}>{s.name}</td>
+                    </Tooltip>
                   </>
                 })}
               </tr>
@@ -186,7 +188,7 @@ function App() {
               </td>
               {host.status.map(stat => {
                 var color = "rgb(130, 244, 160)"
-                var color = (stat.errors && stat.errors > 0) ? "orange": color
+                var color = (stat.errors && stat.errors > 0) ? "orange" : color
                 color = (stat.result == "running") ? color : "red"
                 color = (stat.result == "Timeout") ? "red" : color
                 return <td style={{ backgroundColor: color }}
