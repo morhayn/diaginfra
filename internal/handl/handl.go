@@ -41,7 +41,7 @@ func checkHost(host global.Init, ch chan global.Host, port chport.Cheker, conf s
 		h.ListSsh = srv
 		h.Status = HandleResult(prg)
 		sort.Slice(h.Status, func(p, q int) bool {
-			return h.Status[p].Status < h.Status[q].Status
+			return h.Status[p].Status > h.Status[q].Status
 		})
 
 	}
