@@ -19,6 +19,9 @@ func (m mockExec) Execute(ip string, c sshcmd.CmdExec) {
 func (m mockExec) GetSshPort() string {
 	return "22"
 }
+func (e mockExec) Scp(ip, src, dest string) error {
+	return nil
+}
 
 type mockErr struct{}
 
