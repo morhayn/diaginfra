@@ -15,9 +15,11 @@ import (
 
 	"github.com/morhayn/diaginfra/internal/global"
 	"github.com/morhayn/diaginfra/internal/modules"
+	"github.com/tmc/scp"
 	"golang.org/x/crypto/ssh"
 )
 
+var Status = make(chan string, 10)
 var (
 	mapCmd = map[string]string{
 		"DiskFree": "df / | awk 'FNR > 1 {print $5}'",
@@ -30,6 +32,7 @@ var (
 type Execer interface {
 	Execute(string, CmdExec)
 	GetSshPort() string
+	Scp(ip, src, dest string) error
 }
 
 type SshConfig struct {
@@ -189,7 +192,7 @@ func (s *CmdExec) swCmd(srv, prg chan global.Out) {
 func (conf SshConfig) Execute(ip string, cmd CmdExec) {
 	var d net.Dialer
 	connStr := fmt.Sprintf("%s:%s", ip, conf.sshPort)
-	ctx, cancel := context.WithTimeout(context.Background(), 2*time.Minute)
+	ctx, cancel := context.WithTimeout(context.Background(), 30*time.Second)
 	defer cancel()
 	conn, err := d.DialContext(ctx, "tcp", connStr)
 	defer conn.Close()
@@ -202,7 +205,7 @@ func (conf SshConfig) Execute(ip string, cmd CmdExec) {
 	if err != nil {
 		fmt.Println("Error connect2", ip, err)
 		if conf.recurs < 3 {
-			time.Sleep(1 * time.Second)
+			time.Sleep(5 * time.Second)
 			conf.recurs += 1
 			conf.Execute(ip, cmd)
 		} else {
@@ -227,6 +230,29 @@ func (conf SshConfig) Execute(ip string, cmd CmdExec) {
 		return
 	}
 	cmd.Chan <- NewOut(cmd.Name, cmd.PrgName, stdoutBuf.String())
+}
+func (conf SshConfig) Scp(ip, src, dest string) error {
+	conn, err := ssh.Dial("tcp", ip, conf.ClientConfig)
+	if err != nil {
+		fmt.Printf("Error Connect to %s \n", ip)
+		// fmt.Println("Failed to dial: " + err.Error())
+		return err
+	}
+	session, err := conn.NewSession()
+	if err != nil {
+		// fmt.Println("Failed to create session: " + err.Error())
+		fmt.Printf("Error Session to %s \n", ip)
+		return err
+	}
+	fmt.Printf("%s Copy From: %s To: %s%s \n", ip, src, ip, dest)
+	defer session.Close()
+	err = scp.CopyPath(src, dest, session)
+	if err != nil {
+		fmt.Printf("Faild Copy %s \n", err.Error())
+		return err
+		// fmt.Println("Failed to Copy: " + err.Error())
+	}
+	return nil
 }
 func testSpaceInArg(str []string) bool {
 	r := regexp.MustCompile(`\s+`)

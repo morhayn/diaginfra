@@ -40,6 +40,9 @@ func (m mockExec) Execute(ip string, c sshcmd.CmdExec) {
 func (m mockExec) GetSshPort() string {
 	return "22"
 }
+func (m mockExec) Scp(ip, src, dest string) error {
+	return nil
+}
 func TestCheckHost(t *testing.T) {
 	// mocksshcmdRun = func(ip, stend string, list []string, conf sshcmd.Execer) ([]sshcmd.Out, []sshcmd.Out, error) {
 	// srv := []sshcmd.Out{
