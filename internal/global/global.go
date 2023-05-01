@@ -9,7 +9,7 @@ import (
 )
 
 type YumInit struct {
-	// Stend     string            `yaml:"stend"`
+	Stend    string            `yaml:"stend"`
 	UserName string            `yaml:"user"`
 	SshPort  string            `yaml:"ssh_port"`
 	CountLog int               `yaml:"countlog"`
@@ -27,6 +27,7 @@ type Init struct {
 }
 type Hosts struct {
 	ListUrls []churl.Url `json:"list_url"`
+	Stat     string      `json:"stat"`
 	Stend    []Host      `josn:"stand"`
 }
 type Host struct {

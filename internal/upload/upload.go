@@ -17,7 +17,7 @@ import (
 )
 
 var (
-	conf             = "conf/upload.yml"
+	uploadFile       = "conf/upload.yml"
 	statusFile       = "conf/stend.status"
 	uploadDir        = "upload"
 	modRelDir        = "sudo chmod 0777 %s"
@@ -34,15 +34,15 @@ var (
 	copyWar          = "sudo cp %s%s.war /var/lib/tomcat8/webapps/ && sudo chown tomcat8:tomcat8 /var/lib/tomcat8/webapps/%s.war"
 )
 
-type Upload struct {
-	nfsServer   string `yaml:"nfs_server"`
-	preRelease  string `yaml:"pre_release"`
-	prodRelease string `yaml:"prod_release"`
-	nfsPre      string `yaml:"nfs_pre"`
-	nfsProd     string `yaml:"nfs_prod"`
-	preUpDb     []DbUp `yaml:"pre_up_db"`
-	prodUpDb    []DbUp `yaml:"prod_up_db"`
-	offOn       OffOn  `yaml:"off_on"`
+type UploadConf struct {
+	NfsServer   string `yaml:"nfs_server"`
+	PreRelease  string `yaml:"pre_release"`
+	ProdRelease string `yaml:"prod_release"`
+	NfsPre      string `yaml:"nfs_pre"`
+	NfsProd     string `yaml:"nfs_prod"`
+	PreUpDb     []DbUp `yaml:"pre_up_db"`
+	ProdUpDb    []DbUp `yaml:"prod_up_db"`
+	OffOn       OffOn  `yaml:"off_on"`
 }
 type DbUp struct {
 	Server string   `yaml:"server"`
@@ -56,24 +56,24 @@ type OffOn struct {
 
 func CopyWars(status global.Hosts, stend string, conf sshcmd.Execer) error {
 	destDir := ""
-	upl, err := readConfig()
+	upl, err := readConfig(uploadFile)
 	if err != nil {
 		return err
 	}
 	if stend == "prod" {
-		destDir = upl.prodRelease
-		for _, ip := range upl.offOn.Nginx {
+		destDir = upl.ProdRelease
+		for _, ip := range upl.OffOn.Nginx {
 			_ = exec(ip, stopNginx, conf)
 		}
-		for _, ip := range upl.offOn.Cron {
+		for _, ip := range upl.OffOn.Cron {
 			_ = exec(ip, stopCron, conf)
 		}
-		for _, ip := range upl.offOn.DbManage {
+		for _, ip := range upl.OffOn.DbManage {
 			_ = exec(ip, psqlManageStop, conf)
 		}
 	}
 	if stend == "pre" {
-		destDir = upl.preRelease
+		destDir = upl.PreRelease
 	}
 	err = saveStatus(status)
 	if err != nil {
@@ -84,13 +84,13 @@ func CopyWars(status global.Hosts, stend string, conf sshcmd.Execer) error {
 	if err != nil {
 		return err
 	}
-	_ = exec(upl.nfsServer, fmt.Sprintf(modRelDir, destDir), conf)
+	_ = exec(upl.NfsServer, fmt.Sprintf(modRelDir, destDir), conf)
 	err = filepath.Walk(uploadDir, func(path string, info os.FileInfo, err error) error {
 		if err != nil {
-			return err
+			return nil
 		}
 		if info.Mode().IsRegular() && warRegEx.MatchString(info.Name()) {
-			err = conf.Scp(upl.nfsServer, path, destDir)
+			err = conf.Scp(upl.NfsServer, path, destDir)
 		}
 		return nil
 	})
@@ -100,17 +100,17 @@ func CopyWars(status global.Hosts, stend string, conf sshcmd.Execer) error {
 func UploadDb(stend string, conf sshcmd.Execer, port chport.Cheker) error {
 	upDb := []DbUp{}
 	nfsDir := ""
-	upl, err := readConfig()
+	upl, err := readConfig(uploadFile)
 	if err != nil {
 		return err
 	}
 	if stend == "prod" {
-		upDb = upl.prodUpDb
-		nfsDir = upl.nfsProd
+		upDb = upl.ProdUpDb
+		nfsDir = upl.NfsProd
 	}
 	if stend == "pre" {
-		upDb = upl.preUpDb
-		nfsDir = upl.nfsPre
+		upDb = upl.PreUpDb
+		nfsDir = upl.NfsPre
 	}
 	status, err := loadStatus()
 	if err != nil {
@@ -143,15 +143,15 @@ func UploadWars(stend string, conf sshcmd.Execer, port chport.Cheker) error {
 	if err != nil {
 		return err
 	}
-	upl, err := readConfig()
+	upl, err := readConfig(uploadFile)
 	if err != nil {
 		return err
 	}
 	if stend == "prod" {
-		nfsDir = upl.nfsProd
+		nfsDir = upl.NfsProd
 	}
 	if stend == "pre" {
-		nfsDir = upl.nfsPre
+		nfsDir = upl.NfsPre
 	}
 	for _, host := range status.Stend {
 		if chport.CheckSshPort(host.Ip, conf.GetSshPort(), port) {
@@ -174,13 +174,13 @@ func UploadWars(stend string, conf sshcmd.Execer, port chport.Cheker) error {
 		}
 	}
 	if stend == "prod" {
-		for _, ip := range upl.offOn.Nginx {
+		for _, ip := range upl.OffOn.Nginx {
 			_ = exec(ip, startNginx, conf)
 		}
-		for _, ip := range upl.offOn.Cron {
+		for _, ip := range upl.OffOn.Cron {
 			_ = exec(ip, startCron, conf)
 		}
-		for _, ip := range upl.offOn.DbManage {
+		for _, ip := range upl.OffOn.DbManage {
 			_ = exec(ip, psqlManagerStart, conf)
 		}
 	}
@@ -188,7 +188,8 @@ func UploadWars(stend string, conf sshcmd.Execer, port chport.Cheker) error {
 }
 
 func saveStatus(status global.Hosts) error {
-	if checkFileExist() {
+	// path := pathTofile() + statusFile
+	if !checkFileExist() {
 		return errors.New("Status File Exists")
 	}
 	b, err := json.Marshal(status)
@@ -203,7 +204,7 @@ func saveStatus(status global.Hosts) error {
 }
 func loadStatus() (global.Hosts, error) {
 	gl := global.Hosts{}
-	if !checkFileExist() {
+	if checkFileExist() {
 		return gl, errors.New("Status File Not Exest")
 	}
 	jsonFile, err := os.Open(statusFile)
@@ -248,9 +249,9 @@ func exec(ip, cmd string, conf sshcmd.Execer) string {
 	return out.Result
 }
 
-func readConfig() (Upload, error) {
-	u := Upload{}
-	f, err := ioutil.ReadFile(conf)
+func readConfig(file string) (UploadConf, error) {
+	var u UploadConf
+	f, err := ioutil.ReadFile(file)
 	if err != nil {
 		fmt.Println("Error open file")
 		return u, err
@@ -261,4 +262,11 @@ func readConfig() (Upload, error) {
 		return u, err
 	}
 	return u, nil
+}
+func pathTofile() string {
+	path, err := os.Executable()
+	if err != nil {
+		panic(err)
+	}
+	return filepath.Dir(path)
 }

@@ -12,6 +12,7 @@ import (
 	"github.com/morhayn/diaginfra/internal/global"
 	"github.com/morhayn/diaginfra/internal/handl"
 	"github.com/morhayn/diaginfra/internal/sshcmd"
+	"github.com/morhayn/diaginfra/internal/upload"
 
 	"github.com/gin-contrib/static"
 	"github.com/gin-gonic/gin"
@@ -58,6 +59,7 @@ func RunGin(port chport.Cheker, url churl.Churler, conf sshcmd.Execer, loadData 
 	}
 	api.POST("/get", func(c *gin.Context) {
 		result := handl.ServerHandler(loadData, port, url, conf)
+		result.Stat = loadData.Stend
 		Status = result
 		c.Header("Context-Type", "application/json")
 		c.JSON(http.StatusOK, result)
@@ -87,6 +89,30 @@ func RunGin(port chport.Cheker, url churl.Churler, conf sshcmd.Execer, loadData 
 		logs := getlog.GetLogs(loadData.Logs, loadData.CountLog, conf)
 		c.Header("Context-Type", "application/json")
 		c.JSON(http.StatusOK, logs)
+	})
+	api.POST("/copy", func(c *gin.Context) {
+		err := upload.CopyWars(Status, loadData.Stend, conf)
+		if err != nil {
+			fmt.Println(err)
+		}
+		c.Header("Context-Type", "application/json")
+		c.JSON(http.StatusOK, "OK")
+	})
+	api.POST("/updatedb", func(c *gin.Context) {
+		err := upload.UploadDb(loadData.Stend, conf, port)
+		if err != nil {
+			fmt.Println(err)
+		}
+		c.Header("Context-Type", "application/json")
+		c.JSON(http.StatusOK, "OK")
+	})
+	api.POST("/upload", func(c *gin.Context) {
+		err := upload.UploadWars(loadData.Stend, conf, port)
+		if err != nil {
+			fmt.Println(err)
+		}
+		c.Header("Context-Type", "application/json")
+		c.JSON(http.StatusOK, "OK")
 	})
 	cmd := exec.Command("firefox", "http://localhost:3000/")
 	go cmd.Run()

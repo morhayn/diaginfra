@@ -108,6 +108,22 @@ function App() {
       setdialog("visible")
     })
   }
+  const copywar = () => {
+    AjaxFetch('/api/copy', {}, 'POST').then((data) => {
+      console.log(data)
+    })
+  }
+  const updateDb = () => {
+    AjaxFetch('/api/updatedb', {}, 'POST').then((data) => {
+      console.log(data)
+    })
+  }
+  const updateTomcat = () => {
+    AjaxFetch('/api/upload', {}, 'POST').then((data) => {
+      console.log(data)
+    })
+  }
+
   const DialogBox = () => {
     setdialog("visible")
   }
@@ -165,6 +181,13 @@ function App() {
               </tr>
             })}
           </table>
+        </div>
+        <div className='div3'>
+          {(getdata.stat == "prod") || (getdata.stat == "pre") ? <>
+          <button onClick={() => copywar()}>Copy Wars</button><br />
+          <button onClick={() => updateDb()}>Update Db</button><br />
+          <button onClick={() => updateTomcat()}>Update Tomcat</button>
+          </> : <></>}
         </div>
         <div className='div4'>
           <table>
